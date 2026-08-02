@@ -753,10 +753,3 @@ console.log(
 
 </body>
 </html>
-const URL="https://qobwcoopjubdloduxgrz.supabase.co",KEY="sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
-async function get(t,q){let r=await fetch(URL+"/rest/v1/"+t+q,{headers:{apikey:KEY,Authorization:"Bearer "+KEY}});if(!r.ok)throw Error(await r.text());return r.json()}
-async function loginStudent(){let n=name.value.trim(),e=email.value.trim();if(!n||!e){msg.textContent="Name और Email भरें";return}try{let a=await get("students","?email=eq."+encodeURIComponent(e)+"&select=*");let s=a[0];if(!s){let r=await fetch(URL+"/rest/v1/students",{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json",Prefer:"return=representation"},body:JSON.stringify({name:n,email:e})});if(!r.ok)throw Error(await r.text());s=(await r.json())[0]}login.classList.add("hidden");dashboard.classList.remove("hidden");welcome.textContent=s.name;loadCourses()}catch(x){msg.textContent="Database error: "+x.message}}
-async function loadCourses(){try{let a=await get("courses","?select=id,title,description,price&order=created_at");courses.innerHTML=a.map(c=>`<div class="card"><h3>📚 ${esc(c.title)}</h3><p>${esc(c.description||"")}</p><b>₹${c.price}</b><br><br><button class="btn" onclick="lessons('${c.id}',this)">View Lessons</button><div></div></div>`).join("")}catch(x){courses.textContent="Courses load error: "+x.message}}
-async function lessons(id,b){let box=b.nextElementSibling;box.innerHTML="Loading...";try{let a=await get("lessons","?course_id=eq."+id+"&select=title,description,video_url,pdf_url,lesson_order&order=lesson_order");box.innerHTML=a.length?a.map(l=>`<div class="lesson"><b>📖 ${esc(l.title)}</b><p>${esc(l.description||"")}</p>${l.video_url?`<a href="${l.video_url}" target="_blank">🎥 Video</a>`:""} ${l.pdf_url?`<a href="${l.pdf_url}" target="_blank">📄 PDF</a>`:""}</div>`).join(""):"No lessons yet."}catch(x){box.textContent=x.message}}
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-</script></body></html>
