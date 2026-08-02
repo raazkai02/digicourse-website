@@ -1,5 +1,294 @@
-
 <!doctype html>
 <html lang="hi">
-...
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DigiCourse Admin</title>
+<style>
+body{font-family:Arial;background:#f5f7ff;margin:0;color:#182033}
+header{background:#6633ee;color:white;padding:25px}
+main{padding:20px}
+.box,.course{background:white;padding:18px;margin:15px 0;border-radius:12px}
+input,textarea{width:100%;padding:12px;margin:6px 0;box-sizing:border-box}
+button{padding:11px 15px;border:0;border-radius:8px;background:#6633ee;color:white;margin:5px}
+.red{background:#e53935}
+.hide{display:none}
+.lesson{background:#f0edff;padding:12px;margin:8px 0;border-radius:8px}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎓 DigiCourse Admin</h1>
+<p>Course Management</p>
+</header>
+
+<main>
+
+<div id="login" class="box">
+<h2>🔐 Admin Login</h2>
+<input id="email" type="email" placeholder="Admin Email">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="msg"></p>
+</div>
+
+<div id="panel" class="hide">
+
+<h2>📚 Admin Dashboard</h2>
+<button class="red" onclick="logout()">Logout</button>
+
+<div class="box">
+<h3>➕ Add Course</h3>
+<input id="ct" placeholder="Course Title">
+<textarea id="cd" placeholder="Course Description"></textarea>
+<input id="cp" type="number" placeholder="Price">
+<button onclick="addCourse()">Add Course</button>
+</div>
+
+<div id="courses"></div>
+
+</div>
+</main>
+
+<script>
+
+const U="https://qobwcoopjubdloduxgrz.supabase.co";
+const K="sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+
+let T="";
+
+async function api(path,opt={}){
+let r=await fetch(U+path,{
+...opt,
+headers:{
+apikey:K,
+Authorization:"Bearer "+(T||K),
+"Content-Type":"application/json",
+...(opt.headers||{})
+}});
+let x=await r.text();
+let d=x?JSON.parse(x):null;
+if(!r.ok)throw Error(d?.message||d?.hint||x);
+return d;
+}
+
+async function login(){
+
+let e=email.value.trim();
+let p=pass.value;
+
+msg.textContent="Login...";
+
+try{
+
+let d=await api(
+"/auth/v1/token?grant_type=password",
+{
+method:"POST",
+body:JSON.stringify({
+email:e,
+password:p
+})
+});
+
+T=d.access_token;
+
+let a=await api(
+"/rest/v1/admins?id=eq."+d.user.id+"&select=id,name"
+);
+
+if(!a.length)throw Error("यह User Admin नहीं है");
+
+localStorage.setItem("admin_token",T);
+
+login.classList.add("hide");
+panel.classList.remove("hide");
+
+load();
+
+}catch(x){
+msg.textContent="❌ "+x.message;
+}
+
+}
+
+async function load(){
+
+let a=await api(
+"/rest/v1/courses?select=id,title,description,price&order=created_at"
+);
+
+courses.innerHTML=a.map(c=>`
+
+<div class="course">
+
+<h3>📚 ${esc(c.title)}</h3>
+<p>${esc(c.description||"")}</p>
+<b>₹${c.price||0}</b><br>
+
+<button onclick="show('${c.id}')">
+➕ Add Lesson
+</button>
+
+<button class="red"
+onclick="del('${c.id}')">
+🗑️ Delete
+</button>
+
+<div id="f${c.id}" class="hide">
+
+<input id="t${c.id}" placeholder="Lesson Title">
+<textarea id="d${c.id}" placeholder="Description"></textarea>
+<input id="v${c.id}" placeholder="Video URL">
+<input id="p${c.id}" placeholder="PDF URL">
+
+<button onclick="lesson('${c.id}')">
+💾 Save Lesson
+</button>
+
+</div>
+
+<div id="l${c.id}">
+Loading lessons...
+</div>
+
+</div>
+
+`).join("");
+
+a.forEach(c=>lessons(c.id));
+
+}
+
+async function addCourse(){
+
+try{
+
+await api("/rest/v1/courses",{
+method:"POST",
+headers:{Prefer:"return=minimal"},
+body:JSON.stringify({
+title:ct.value,
+description:cd.value,
+price:Number(cp.value)||0
+})
+});
+
+ct.value="";
+cd.value="";
+cp.value="";
+
+load();
+
+}catch(x){
+alert(x.message);
+}
+
+}
+
+function show(id){
+document.getElementById("f"+id).classList.toggle("hide");
+}
+
+async function lesson(id){
+
+try{
+
+await api("/rest/v1/lessons",{
+method:"POST",
+headers:{Prefer:"return=minimal"},
+body:JSON.stringify({
+course_id:id,
+title:document.getElementById("t"+id).value,
+description:document.getElementById("d"+id).value,
+video_url:document.getElementById("v"+id).value||null,
+pdf_url:document.getElementById("p"+id).value||null,
+lesson_order:1
+})
+});
+
+alert("✅ Lesson add हो गया");
+lessons(id);
+
+}catch(x){
+alert(x.message);
+}
+
+}
+
+async function lessons(id){
+
+try{
+
+let a=await api(
+"/rest/v1/lessons?course_id=eq."+id+
+"&select=id,title,description,video_url,pdf_url&order=lesson_order"
+);
+
+document.getElementById("l"+id).innerHTML=
+a.map(x=>`
+
+<div class="lesson">
+<b>📖 ${esc(x.title)}</b>
+<p>${esc(x.description||"")}</p>
+
+${x.video_url?
+`🎥 <a href="${x.video_url}" target="_blank">Video</a>`:""}
+
+${x.pdf_url?
+` 📄 <a href="${x.pdf_url}" target="_blank">PDF</a>`:""}
+
+</div>
+
+`).join("")||"कोई lesson नहीं";
+
+}catch(x){
+
+document.getElementById("l"+id).textContent=
+"❌ "+x.message;
+
+}
+
+}
+
+async function del(id){
+
+if(!confirm("Course delete करें?"))return;
+
+try{
+
+await api(
+"/rest/v1/courses?id=eq."+id,
+{method:"DELETE"}
+);
+
+load();
+
+}catch(x){
+alert(x.message);
+}
+
+}
+
+function logout(){
+
+localStorage.removeItem("admin_token");
+location.reload();
+
+}
+
+function esc(s){
+
+return String(s||"").replace(
+/[&<>"']/g,
+m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])
+);
+
+}
+
+</script>
+
+</body>
+</html>
