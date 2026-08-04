@@ -1,755 +1,152 @@
-<!doctype html>
-<html lang="hi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DigiCourse LMS</title>
-
-<style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f7ff;
-  color:#182033
-}
-
-.hero{
-  padding:35px 6%;
-  color:white;
-  background:linear-gradient(135deg,#5b2cff,#8d4cff)
-}
-
-.hero h1{
-  margin:0 0 8px;
-  font-size:30px
-}
-
-.wrap{
-  padding:30px 6%
-}
-
-.box,.card{
-  background:white;
-  padding:22px;
-  border-radius:16px;
-  box-shadow:0 6px 22px #0001
-}
-
-.box{
-  max-width:430px;
-  margin:10px auto
-}
-
-.box input{
-  width:100%;
-  padding:13px;
-  margin:7px 0;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:16px
-}
-
-.btn{
-  width:100%;
-  padding:13px;
-  margin-top:8px;
-  background:#6633ee;
-  color:white;
-  border:0;
-  border-radius:9px;
-  font-size:16px;
-  cursor:pointer
-}
-
-.btn:active{
-  transform:scale(.98)
-}
-
-.logout{
-  width:auto;
-  padding:10px 18px;
-  background:#e53935
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:18px
-}
-
-.lesson{
-  margin-top:12px;
-  padding:15px;
-  background:#f1efff;
-  border-radius:10px
-}
-
-.hidden{
-  display:none!important
-}
-
-.msg{
-  margin-top:12px;
-  font-weight:bold
-}
-
-.success{
-  color:green
-}
-
-.error{
-  color:#d00
-}
-
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-bottom:25px
-}
-
-.price{
-  font-size:20px;
-  font-weight:bold;
-  color:#6633ee
-}
-
-a{
-  color:#6633ee;
-  text-decoration:none;
-  font-weight:bold;
-  margin-right:15px
-}
-</style>
-</head>
-
-<body>
-
-<section class="hero">
-  <h1>🎓 DigiCourse LMS</h1>
-  <p>Student Learning Portal</p>
-</section>
-
-<main class="wrap">
-
-<!-- LOGIN -->
-<div id="login" class="box">
-
-  <h2>👨‍🎓 Student Login / Register</h2>
-
-  <input
-    id="name"
-    type="text"
-    placeholder="Student Name"
-  >
-
-  <input
-    id="email"
-    type="email"
-    placeholder="Email"
-  >
-
-  <input
-    id="password"
-    type="password"
-    placeholder="Password"
-  >
-
-  <button
-    class="btn"
-    id="loginBtn"
-    onclick="loginStudent()"
-  >
-    Login / Register
-  </button>
-
-  <p id="msg" class="msg"></p>
-
-</div>
-
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
-
-  <div class="topbar">
-    <div>
-      <h2>Welcome, <span id="welcome"></span> 👋</h2>
-      <p>🎓 Student Dashboard</p>
-    </div>
-
-    <button
-      class="btn logout"
-      onclick="logoutStudent()"
-    >
-      Logout
-    </button>
-  </div>
-
-  <h2>📚 Available Courses</h2>
-
-  <div id="courses" class="cards">
-    Loading courses...
-  </div>
-
-</div>
-
-</main>
-
-
-<script>
-
-/* ================================
-   SUPABASE CONFIG
-================================ */
-
-const SUPABASE_URL =
-"https://qobwcoopjubdloduxgrz.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
-
-
-/* ================================
-   ELEMENTS
-================================ */
-
-const loginBox =
-document.getElementById("login");
-
-const dashboard =
-document.getElementById("dashboard");
-
-const nameInput =
-document.getElementById("name");
-
-const emailInput =
-document.getElementById("email");
-
-const passwordInput =
-document.getElementById("password");
-
-const loginBtn =
-document.getElementById("loginBtn");
-
-const msg =
-document.getElementById("msg");
-
-const welcome =
-document.getElementById("welcome");
-
-const courses =
-document.getElementById("courses");
-
-
-/* ================================
-   SUPABASE REQUEST
-================================ */
-
-async function supabaseRequest(
-  endpoint,
-  options={}
-){
-
-  const response =
-  await fetch(
-    SUPABASE_URL + endpoint,
-    {
-      ...options,
-
-      headers:{
-        "apikey":SUPABASE_KEY,
-
-        "Authorization":
-        "Bearer " + SUPABASE_KEY,
-
-        "Content-Type":
-        "application/json",
-
-        ...(options.headers || {})
-      }
-    }
-  );
-
-  const text =
-  await response.text();
-
-  let data=null;
-
-  try{
-    data=text ? JSON.parse(text) : null;
-  }
-  catch{
-    data=text;
-  }
-
-  if(!response.ok){
-
-    throw new Error(
-      data?.message ||
-      data?.error_description ||
-      data?.error ||
-      "Supabase error"
-    );
-  }
-
-  return data;
-}
-
-
-/* ================================
-   LOGIN / REGISTER
-================================ */
-
-async function loginStudent(){
-
-  const name =
-  nameInput.value.trim();
-
-  const email =
-  emailInput.value.trim();
-
-  const password =
-  passwordInput.value;
-
-  msg.textContent="";
-  msg.className="msg";
-
-  if(!name){
-
-    msg.textContent=
-    "कृपया Student Name भरें";
-
-    msg.classList.add("error");
-
-    return;
-  }
-
-  if(!email){
-
-    msg.textContent=
-    "कृपया Email भरें";
-
-    msg.classList.add("error");
-
-    return;
-  }
-
-  if(!password || password.length < 6){
-
-    msg.textContent=
-    "Password कम से कम 6 characters का होना चाहिए";
-
-    msg.classList.add("error");
-
-    return;
-  }
-
-
-  loginBtn.disabled=true;
-  loginBtn.textContent="Please wait...";
-
-
-  try{
-
-    /*
-      पहले Login try करेंगे
-    */
-
-    let loginData;
-
-    try{
-
-      loginData =
-      await supabaseRequest(
-        "/auth/v1/token?grant_type=password",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-            email:email,
-            password:password
-          })
-        }
-      );
-
-    }
-    catch(loginError){
-
-      /*
-        Login fail हुआ तो Register करेंगे
-      */
-
-      const registerData =
-      await supabaseRequest(
-        "/auth/v1/signup",
-        {
-          method:"POST",
-
-          body:JSON.stringify({
-            email:email,
-            password:password,
-
-            data:{
-              name:name
-            }
-          })
-        }
-      );
-
-      loginData=registerData;
-
-    }
-
-
-    /*
-      Access token save
-    */
-
-    if(loginData?.access_token){
-
-      localStorage.setItem(
-        "dc_access_token",
-        loginData.access_token
-      );
-
-      localStorage.setItem(
-        "dc_user",
-        JSON.stringify(
-          loginData.user || {}
-        )
-      );
-
-    }
-
-
-    /*
-      students table में student save/update
-    */
-
-    try{
-
-      const token =
-      loginData?.access_token ||
-      SUPABASE_KEY;
-
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/students",
-        {
-          method:"POST",
-
-          headers:{
-            "apikey":SUPABASE_KEY,
-            "Authorization":
-            "Bearer " + token,
-
-            "Content-Type":
-            "application/json",
-
-            "Prefer":
-            "resolution=merge-duplicates"
-          },
-
-          body:JSON.stringify({
-            name:name,
-            email:email
-          })
-        }
-      );
-
-    }
-    catch(studentError){
-
-      console.log(
-        "Student table:",
-        studentError
-      );
-
-    }
-
-
-    /*
-      Dashboard खोलें
-    */
-
-    loginBox.classList.add("hidden");
-
-    dashboard.classList.remove("hidden");
-
-    welcome.textContent=name;
-
-    msg.textContent="";
-
-    loadCourses();
-
-  }
-  catch(error){
-
-    console.error(error);
-
-    msg.textContent=
-    "Login/Register Error: " +
-    error.message;
-
-    msg.classList.add("error");
-
-  }
-
-
-  loginBtn.disabled=false;
-  loginBtn.textContent=
-  "Login / Register";
-}
-
-
-/* ================================
-   LOAD COURSES
-================================ */
-
 async function loadCourses(){
 
-  courses.innerHTML=
-  "⏳ Courses loading...";
+  courses.innerHTML="⏳ आपके courses loading...";
 
   try{
 
-    const data =
-    await supabaseRequest(
-      "/rest/v1/courses?select=id,title,description,price&order=created_at"
-    );
+    const token =
+      localStorage.getItem("dc_access_token");
 
-    if(!data || data.length===0){
+    if(!token){
+      throw new Error("Student login required");
+    }
 
-      courses.innerHTML=
-      "<div class='card'>" +
-      "📚 अभी कोई course उपलब्ध नहीं है." +
-      "</div>";
+    const user =
+      JSON.parse(
+        localStorage.getItem("dc_user") || "{}"
+      );
+
+    if(!user.id){
+      throw new Error("Student session नहीं मिली");
+    }
+
+    /* केवल student के खरीदे/enrolled courses */
+
+    const enrollments =
+      await supabaseRequest(
+        "/rest/v1/student_courses" +
+        "?student_id=eq." +
+        encodeURIComponent(user.id) +
+        "&select=course_id"
+      );
+
+    if(!enrollments || enrollments.length===0){
+
+      courses.innerHTML=`
+        <div class="card">
+
+          <h3>📚 अभी कोई Course नहीं है</h3>
+
+          <p>
+            आपने अभी कोई course purchase नहीं किया है।
+          </p>
+
+          <a
+            href="index.html"
+            class="btn"
+            style="display:inline-block;text-align:center"
+          >
+            🛒 Course खरीदें
+          </a>
+
+        </div>
+      `;
 
       return;
     }
 
+    const ids =
+      enrollments
+      .map(x => x.course_id)
+      .filter(Boolean);
 
-    courses.innerHTML=
-    data.map(course=>`
+    if(ids.length===0){
+      courses.innerHTML=
+      "<div class='card'>📚 कोई course नहीं मिला।</div>";
+      return;
+    }
 
-      <div class="card">
+    const courseData =
+      await supabaseRequest(
+        "/rest/v1/courses" +
+        "?id=in.(" +
+        ids.map(encodeURIComponent).join(",") +
+        ")" +
+        "&select=id,title,description,price,original_price,offer_price"
+      );
 
-        <h3>
-          📚 ${escapeHTML(course.title)}
-        </h3>
+    if(!courseData || courseData.length===0){
 
-        <p>
-          ${escapeHTML(
-            course.description || ""
-          )}
-        </p>
+      courses.innerHTML=`
+        <div class="card">
+          📚 आपका purchased course अभी उपलब्ध नहीं है।
+        </div>
+      `;
 
-        <div class="price">
-          ₹${course.price ?? 0}
+      return;
+    }
+
+    courses.innerHTML =
+      courseData.map(course=>`
+
+        <div class="card">
+
+          <h3>
+            📚 ${escapeHTML(course.title)}
+          </h3>
+
+          <p>
+            ${escapeHTML(course.description || "")}
+          </p>
+
+          <div class="price">
+            ₹${course.offer_price ??
+              course.price ?? 0}
+          </div>
+
+          <span
+            style="
+            display:inline-block;
+            margin:8px 0;
+            padding:5px 10px;
+            border-radius:20px;
+            background:#e8f7ed;
+            color:#16843b;
+            font-weight:bold;
+            "
+          >
+            ✅ Purchased
+          </span>
+
+          <button
+            class="btn"
+            onclick="showLessons('${course.id}',this)"
+          >
+            📖 Open My Course
+          </button>
+
+          <div class="lessonBox"></div>
+
         </div>
 
-        <button
-          class="btn"
-          onclick="showLessons('${course.id}',this)"
-        >
-          📖 View Lessons
-        </button>
-
-        <div class="lessonBox"></div>
-
-      </div>
-
-    `).join("");
+      `).join("");
 
   }
   catch(error){
 
     console.error(error);
 
-    courses.innerHTML=
-    "<div class='card'>" +
-    "❌ Courses load नहीं हो पाए।<br><br>" +
-    escapeHTML(error.message) +
-    "</div>";
+    courses.innerHTML=`
+      <div class="card">
 
-  }
-}
+        ❌ Courses load नहीं हो पाए।
 
+        <br><br>
 
-/* ================================
-   LOAD LESSONS
-================================ */
-
-async function showLessons(
-  courseId,
-  button
-){
-
-  const box =
-  button.parentElement
-  .querySelector(".lessonBox");
-
-  box.innerHTML=
-  "⏳ Lessons loading...";
-
-  try{
-
-    const data =
-    await supabaseRequest(
-      "/rest/v1/lessons" +
-      "?course_id=eq." +
-      encodeURIComponent(courseId) +
-      "&select=title,description,video_url,pdf_url,lesson_order" +
-      "&order=lesson_order"
-    );
-
-
-    if(!data || data.length===0){
-
-      box.innerHTML=
-      "<div class='lesson'>" +
-      "📖 अभी कोई lesson उपलब्ध नहीं है." +
-      "</div>";
-
-      return;
-    }
-
-
-    box.innerHTML=
-    data.map(lesson=>`
-
-      <div class="lesson">
-
-        <b>
-          📖 ${escapeHTML(lesson.title)}
-        </b>
-
-        <p>
-          ${escapeHTML(
-            lesson.description || ""
-          )}
-        </p>
-
-        ${
-          lesson.video_url
-          ?
-          `<a
-            href="${escapeAttribute(
-              lesson.video_url
-            )}"
-            target="_blank"
-            rel="noopener"
-          >
-            🎥 Video
-          </a>`
-          :
-          ""
-        }
-
-        ${
-          lesson.pdf_url
-          ?
-          `<a
-            href="${escapeAttribute(
-              lesson.pdf_url
-            )}"
-            target="_blank"
-            rel="noopener"
-          >
-            📄 PDF
-          </a>`
-          :
-          ""
-        }
+        ${escapeHTML(error.message)}
 
       </div>
-
-    `).join("");
-
-  }
-  catch(error){
-
-    box.innerHTML=
-    "❌ Lesson error: " +
-    escapeHTML(error.message);
+    `;
 
   }
 }
-
-
-/* ================================
-   LOGOUT
-================================ */
-
-function logoutStudent(){
-
-  localStorage.removeItem(
-    "dc_access_token"
-  );
-
-  localStorage.removeItem(
-    "dc_user"
-  );
-
-  dashboard.classList.add("hidden");
-
-  loginBox.classList.remove("hidden");
-
-  nameInput.value="";
-  emailInput.value="";
-  passwordInput.value="";
-
-  msg.textContent="";
-
-}
-
-
-/* ================================
-   SECURITY HELPERS
-================================ */
-
-function escapeHTML(value){
-
-  return String(value ?? "")
-  .replace(
-    /[&<>"']/g,
-    function(char){
-
-      return {
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#39;"
-      }[char];
-
-    }
-  );
-
-}
-
-
-function escapeAttribute(value){
-
-  return String(value ?? "")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#39;");
-
-}
-
-
-/* ================================
-   TEST
-================================ */
-
-console.log(
-  "DigiCourse LMS loaded successfully"
-);
-
-</script>
-
-</body>
-</html>
