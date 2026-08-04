@@ -4,16 +4,57 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DigiCourse Admin</title>
+
 <style>
-body{font-family:Arial;background:#f5f7ff;margin:0;color:#182033}
-header{background:#6633ee;color:white;padding:25px}
-main{padding:20px}
-.box,.course{background:white;padding:18px;margin:15px 0;border-radius:12px}
-input,textarea{width:100%;padding:12px;margin:6px 0;box-sizing:border-box}
-button{padding:11px 15px;border:0;border-radius:8px;background:#6633ee;color:white;margin:5px}
-.red{background:#e53935}
-.hide{display:none}
-.lesson{background:#f0edff;padding:12px;margin:8px 0;border-radius:8px}
+body{
+font-family:Arial;
+background:#f5f7ff;
+margin:0;
+color:#182033
+}
+header{
+background:#6633ee;
+color:white;
+padding:25px
+}
+main{
+padding:20px
+}
+.box,.course{
+background:white;
+padding:18px;
+margin:15px 0;
+border-radius:12px
+}
+input,textarea{
+width:100%;
+padding:12px;
+margin:6px 0;
+box-sizing:border-box
+}
+button{
+padding:11px 15px;
+border:0;
+border-radius:8px;
+background:#6633ee;
+color:white;
+margin:5px
+}
+.red{
+background:#e53935
+}
+.hide{
+display:none
+}
+.lesson{
+background:#f0edff;
+padding:12px;
+margin:8px 0;
+border-radius:8px
+}
+a{
+color:#6633ee
+}
 </style>
 </head>
 
@@ -26,267 +67,1162 @@ button{padding:11px 15px;border:0;border-radius:8px;background:#6633ee;color:whi
 
 <main>
 
+<!-- ADMIN LOGIN -->
+
 <div id="login" class="box">
+
 <h2>🔐 Admin Login</h2>
-<input id="email" type="email" placeholder="Admin Email">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+
+<input
+id="email"
+type="email"
+placeholder="Admin Email">
+
+<input
+id="pass"
+type="password"
+placeholder="Password">
+
+<button onclick="loginAdmin()">
+Login
+</button>
+
+<button onclick="showForgot()">
+🔑 Forgot Password?
+</button>
+
 <p id="msg"></p>
+
 </div>
+
+
+<!-- FORGOT PASSWORD -->
+
+<div id="forgot" class="box hide">
+
+<h2>🔑 Reset Admin Password</h2>
+
+<p>
+Admin email डालें। Reset link आपके Gmail पर आएगा।
+</p>
+
+<input
+id="forgotEmail"
+type="email"
+placeholder="Admin Email">
+
+<button onclick="sendReset()">
+Send Reset Link
+</button>
+
+<button onclick="backLogin()">
+Back to Login
+</button>
+
+<p id="forgotMsg"></p>
+
+</div>
+
+
+<!-- NEW PASSWORD -->
+
+<div id="newPassword" class="box hide">
+
+<h2>🔄 Set New Password</h2>
+
+<p>
+अपना नया password डालें।
+</p>
+
+<input
+id="newPass"
+type="password"
+placeholder="New Password">
+
+<input
+id="newPass2"
+type="password"
+placeholder="Confirm New Password">
+
+<button onclick="updatePassword()">
+Update Password
+</button>
+
+<p id="newMsg"></p>
+
+</div>
+
+
+<!-- ADMIN DASHBOARD -->
 
 <div id="panel" class="hide">
 
 <h2>📚 Admin Dashboard</h2>
-<button class="red" onclick="logout()">Logout</button>
+
+<button
+class="red"
+onclick="logout()">
+Logout
+</button>
+
+
+<!-- ADD COURSE -->
 
 <div class="box">
+
 <h3>➕ Add Course</h3>
-<input id="ct" placeholder="Course Title">
-<textarea id="cd" placeholder="Course Description"></textarea>
-<input id="cp" type="number" placeholder="Price">
-<button onclick="addCourse()">Add Course</button>
+
+<input
+id="ct"
+placeholder="Course Title">
+
+<textarea
+id="cd"
+placeholder="Course Description">
+</textarea>
+
+<input
+id="cp"
+type="number"
+placeholder="Price">
+
+<button onclick="addCourse()">
+Add Course
+</button>
+
 </div>
 
 <div id="courses"></div>
 
 </div>
+
 </main>
+
 
 <script>
 
-const U="https://qobwcoopjubdloduxgrz.supabase.co";
-const K="sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+const U =
+"https://qobwcoopjubdloduxgrz.supabase.co";
 
-let T="";
+const K =
+"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+
+
+let T =
+localStorage.getItem("admin_token") || "";
+
+
+/* API */
 
 async function api(path,opt={}){
-let r=await fetch(U+path,{
+
+let r =
+await fetch(U+path,{
+
 ...opt,
+
 headers:{
+
 apikey:K,
-Authorization:"Bearer "+(T||K),
-"Content-Type":"application/json",
+
+Authorization:
+"Bearer "+(T||K),
+
+"Content-Type":
+"application/json",
+
 ...(opt.headers||{})
-}});
-let x=await r.text();
-let d=x?JSON.parse(x):null;
-if(!r.ok)throw Error(d?.message||d?.hint||x);
-return d;
+
 }
 
-async function login(){
+});
 
-let e=email.value.trim();
-let p=pass.value;
 
-msg.textContent="Login...";
+let x =
+await r.text();
+
+let d =
+x ? JSON.parse(x) : null;
+
+if(!r.ok){
+
+throw Error(
+d?.msg ||
+d?.message ||
+d?.hint ||
+x
+);
+
+}
+
+return d;
+
+}
+
+
+/* ADMIN LOGIN */
+
+async function loginAdmin(){
+
+let e =
+document.getElementById("email")
+.value.trim();
+
+let p =
+document.getElementById("pass")
+.value;
+
+let msg =
+document.getElementById("msg");
+
+
+if(!e || !p){
+
+msg.textContent =
+"❌ Email और Password डालें";
+
+return;
+
+}
+
+
+msg.textContent =
+"Login...";
+
 
 try{
 
-let d=await api(
+let d =
+await api(
 "/auth/v1/token?grant_type=password",
 {
+
 method:"POST",
-body:JSON.stringify({
+
+body:
+JSON.stringify({
+
 email:e,
+
 password:p
+
 })
+
 });
 
-T=d.access_token;
 
-let a=await api(
-"/rest/v1/admins?id=eq."+d.user.id+"&select=id,name"
+T =
+d.access_token;
+
+
+let a =
+await api(
+"/rest/v1/admins?id=eq."
++
+encodeURIComponent(d.user.id)
++
+"&select=id,name"
 );
 
-if(!a.length)throw Error("यह User Admin नहीं है");
 
-localStorage.setItem("admin_token",T);
+if(!a.length){
 
-login.classList.add("hide");
-panel.classList.remove("hide");
+throw Error(
+"यह User Admin नहीं है"
+);
+
+}
+
+
+localStorage.setItem(
+"admin_token",
+T
+);
+
+localStorage.setItem(
+"admin_user_id",
+d.user.id
+);
+
+
+showPanel();
 
 load();
 
-}catch(x){
-msg.textContent="❌ "+x.message;
-}
 
 }
+catch(x){
 
-async function load(){
-
-let a=await api(
-"/rest/v1/courses?select=id,title,description,price&order=created_at"
-);
-
-courses.innerHTML=a.map(c=>`
-
-<div class="course">
-
-<h3>📚 ${esc(c.title)}</h3>
-<p>${esc(c.description||"")}</p>
-<b>₹${c.price||0}</b><br>
-
-<button onclick="show('${c.id}')">
-➕ Add Lesson
-</button>
-
-<button class="red"
-onclick="del('${c.id}')">
-🗑️ Delete
-</button>
-
-<div id="f${c.id}" class="hide">
-
-<input id="t${c.id}" placeholder="Lesson Title">
-<textarea id="d${c.id}" placeholder="Description"></textarea>
-<input id="v${c.id}" placeholder="Video URL">
-<input id="p${c.id}" placeholder="PDF URL">
-
-<button onclick="lesson('${c.id}')">
-💾 Save Lesson
-</button>
-
-</div>
-
-<div id="l${c.id}">
-Loading lessons...
-</div>
-
-</div>
-
-`).join("");
-
-a.forEach(c=>lessons(c.id));
-
-}
-
-async function addCourse(){
-
-try{
-
-await api("/rest/v1/courses",{
-method:"POST",
-headers:{Prefer:"return=minimal"},
-body:JSON.stringify({
-title:ct.value,
-description:cd.value,
-price:Number(cp.value)||0
-})
-});
-
-ct.value="";
-cd.value="";
-cp.value="";
-
-load();
-
-}catch(x){
-alert(x.message);
-}
-
-}
-
-function show(id){
-document.getElementById("f"+id).classList.toggle("hide");
-}
-
-async function lesson(id){
-
-try{
-
-await api("/rest/v1/lessons",{
-method:"POST",
-headers:{Prefer:"return=minimal"},
-body:JSON.stringify({
-course_id:id,
-title:document.getElementById("t"+id).value,
-description:document.getElementById("d"+id).value,
-video_url:document.getElementById("v"+id).value||null,
-pdf_url:document.getElementById("p"+id).value||null,
-lesson_order:1
-})
-});
-
-alert("✅ Lesson add हो गया");
-lessons(id);
-
-}catch(x){
-alert(x.message);
-}
-
-}
-
-async function lessons(id){
-
-try{
-
-let a=await api(
-"/rest/v1/lessons?course_id=eq."+id+
-"&select=id,title,description,video_url,pdf_url&order=lesson_order"
-);
-
-document.getElementById("l"+id).innerHTML=
-a.map(x=>`
-
-<div class="lesson">
-<b>📖 ${esc(x.title)}</b>
-<p>${esc(x.description||"")}</p>
-
-${x.video_url?
-`🎥 <a href="${x.video_url}" target="_blank">Video</a>`:""}
-
-${x.pdf_url?
-` 📄 <a href="${x.pdf_url}" target="_blank">PDF</a>`:""}
-
-</div>
-
-`).join("")||"कोई lesson नहीं";
-
-}catch(x){
-
-document.getElementById("l"+id).textContent=
+msg.textContent =
 "❌ "+x.message;
 
 }
 
 }
 
-async function del(id){
 
-if(!confirm("Course delete करें?"))return;
+/* FORGOT PASSWORD */
+
+function showForgot(){
+
+document
+.getElementById("login")
+.classList.add("hide");
+
+document
+.getElementById("newPassword")
+.classList.add("hide");
+
+document
+.getElementById("forgot")
+.classList.remove("hide");
+
+
+document
+.getElementById("forgotMsg")
+.textContent="";
+
+
+let old =
+document
+.getElementById("email")
+.value.trim();
+
+
+if(old){
+
+document
+.getElementById("forgotEmail")
+.value=old;
+
+}
+
+}
+
+
+/* BACK TO LOGIN */
+
+function backLogin(){
+
+document
+.getElementById("forgot")
+.classList.add("hide");
+
+document
+.getElementById("newPassword")
+.classList.add("hide");
+
+document
+.getElementById("login")
+.classList.remove("hide");
+
+}
+
+
+/* SEND RESET EMAIL */
+
+async function sendReset(){
+
+let e =
+document
+.getElementById("forgotEmail")
+.value.trim();
+
+
+let m =
+document
+.getElementById("forgotMsg");
+
+
+if(!e){
+
+m.textContent =
+"❌ Admin Email डालें";
+
+return;
+
+}
+
+
+m.textContent =
+"Sending...";
+
+
+try{
+
+/*
+Admin page का live URL
+*/
+
+let redirect =
+location.origin +
+location.pathname;
+
+
+let r =
+await fetch(
+U+"/auth/v1/recover",
+{
+
+method:"POST",
+
+headers:{
+
+apikey:K,
+
+"Content-Type":
+"application/json"
+
+},
+
+body:
+JSON.stringify({
+
+email:e,
+
+redirect_to:redirect
+
+})
+
+});
+
+
+let text =
+await r.text();
+
+
+let d =
+text ? JSON.parse(text) : null;
+
+
+if(!r.ok){
+
+throw Error(
+d?.msg ||
+d?.message ||
+text
+);
+
+}
+
+
+m.textContent =
+"✅ Reset link भेज दिया गया। Gmail में नया email खोलें।";
+
+
+}
+catch(x){
+
+m.textContent =
+"❌ "+x.message;
+
+}
+
+}
+
+
+/* CHECK PASSWORD RECOVERY LINK */
+
+function checkRecoveryLink(){
+
+let hash =
+location.hash.substring(1);
+
+
+if(!hash){
+
+return;
+
+}
+
+
+let params =
+new URLSearchParams(hash);
+
+
+let type =
+params.get("type");
+
+
+let access =
+params.get("access_token");
+
+
+if(
+type==="recovery"
+&&
+access
+){
+
+T=access;
+
+
+document
+.getElementById("login")
+.classList.add("hide");
+
+
+document
+.getElementById("forgot")
+.classList.add("hide");
+
+
+document
+.getElementById("newPassword")
+.classList.remove("hide");
+
+
+document
+.getElementById("newMsg")
+.textContent="";
+
+}
+
+}
+
+
+/* UPDATE PASSWORD */
+
+async function updatePassword(){
+
+let p1 =
+document
+.getElementById("newPass")
+.value;
+
+
+let p2 =
+document
+.getElementById("newPass2")
+.value;
+
+
+let m =
+document
+.getElementById("newMsg");
+
+
+if(!p1 || !p2){
+
+m.textContent =
+"❌ दोनों password डालें";
+
+return;
+
+}
+
+
+if(p1.length<6){
+
+m.textContent =
+"❌ Password कम से कम 6 characters का रखें";
+
+return;
+
+}
+
+
+if(p1!==p2){
+
+m.textContent =
+"❌ दोनों password समान नहीं हैं";
+
+return;
+
+}
+
+
+m.textContent =
+"Updating...";
+
+
+try{
+
+let r =
+await fetch(
+U+"/auth/v1/user",
+{
+
+method:"PUT",
+
+headers:{
+
+apikey:K,
+
+Authorization:
+"Bearer "+T,
+
+"Content-Type":
+"application/json"
+
+},
+
+body:
+JSON.stringify({
+
+password:p1
+
+})
+
+});
+
+
+let text =
+await r.text();
+
+
+let d =
+text ? JSON.parse(text) : null;
+
+
+if(!r.ok){
+
+throw Error(
+d?.msg ||
+d?.message ||
+text
+);
+
+}
+
+
+m.textContent =
+"✅ Password successfully update हो गया।";
+
+
+setTimeout(()=>{
+
+history.replaceState(
+null,
+"",
+location.pathname
+);
+
+
+backLogin();
+
+
+document
+.getElementById("email")
+.focus();
+
+
+},1200);
+
+
+}
+catch(x){
+
+m.textContent =
+"❌ "+x.message;
+
+}
+
+}
+
+
+/* SHOW ADMIN PANEL */
+
+function showPanel(){
+
+document
+.getElementById("login")
+.classList.add("hide");
+
+
+document
+.getElementById("forgot")
+.classList.add("hide");
+
+
+document
+.getElementById("newPassword")
+.classList.add("hide");
+
+
+document
+.getElementById("panel")
+.classList.remove("hide");
+
+}
+
+
+/* RESTORE SESSION */
+
+async function restoreSession(){
+
+if(!T){
+
+return;
+
+}
+
+
+try{
+
+let d =
+await api(
+"/auth/v1/user"
+);
+
+
+let a =
+await api(
+"/rest/v1/admins?id=eq."
++
+encodeURIComponent(d.id)
++
+"&select=id,name"
+);
+
+
+if(a.length){
+
+showPanel();
+
+load();
+
+}
+
+}
+catch(e){
+
+T="";
+
+localStorage.removeItem(
+"admin_token"
+);
+
+localStorage.removeItem(
+"admin_user_id"
+);
+
+}
+
+}
+
+
+/* LOAD COURSES */
+
+async function load(){
+
+try{
+
+let a =
+await api(
+"/rest/v1/courses?select=id,title,description,price&order=created_at"
+);
+
+
+document
+.getElementById("courses")
+.innerHTML =
+
+a.map(c=>`
+
+<div class="course">
+
+<h3>
+📚 ${esc(c.title)}
+</h3>
+
+<p>
+${esc(c.description||"")}
+</p>
+
+<b>
+₹${c.price||0}
+</b>
+
+<br>
+
+<button
+onclick="show('${c.id}')">
+
+➕ Add Lesson
+
+</button>
+
+
+<button
+class="red"
+onclick="del('${c.id}')">
+
+🗑️ Delete
+
+</button>
+
+
+<div
+id="f${c.id}"
+class="hide">
+
+<input
+id="t${c.id}"
+placeholder="Lesson Title">
+
+
+<textarea
+id="d${c.id}"
+placeholder="Description">
+</textarea>
+
+
+<input
+id="v${c.id}"
+placeholder="Video URL">
+
+
+<input
+id="p${c.id}"
+placeholder="PDF URL">
+
+
+<button
+onclick="lesson('${c.id}')">
+
+💾 Save Lesson
+
+</button>
+
+</div>
+
+
+<div
+id="l${c.id}">
+
+Loading lessons...
+
+</div>
+
+</div>
+
+`).join("");
+
+
+a.forEach(
+c=>lessons(c.id)
+);
+
+
+}
+catch(x){
+
+document
+.getElementById("courses")
+.textContent =
+"❌ "+x.message;
+
+}
+
+}
+
+
+/* ADD COURSE */
+
+async function addCourse(){
 
 try{
 
 await api(
-"/rest/v1/courses?id=eq."+id,
-{method:"DELETE"}
+"/rest/v1/courses",
+{
+
+method:"POST",
+
+headers:{
+Prefer:"return=minimal"
+},
+
+body:
+JSON.stringify({
+
+title:
+document
+.getElementById("ct")
+.value,
+
+description:
+document
+.getElementById("cd")
+.value,
+
+price:
+Number(
+document
+.getElementById("cp")
+.value
+)||0
+
+})
+
+}
 );
+
+
+document
+.getElementById("ct")
+.value="";
+
+
+document
+.getElementById("cd")
+.value="";
+
+
+document
+.getElementById("cp")
+.value="";
+
 
 load();
 
-}catch(x){
+
+}
+catch(x){
+
 alert(x.message);
+
 }
 
 }
+
+
+/* SHOW LESSON FORM */
+
+function show(id){
+
+document
+.getElementById("f"+id)
+.classList.toggle("hide");
+
+}
+
+
+/* ADD LESSON */
+
+async function lesson(id){
+
+try{
+
+await api(
+"/rest/v1/lessons",
+{
+
+method:"POST",
+
+headers:{
+Prefer:"return=minimal"
+},
+
+body:
+JSON.stringify({
+
+course_id:id,
+
+title:
+document
+.getElementById("t"+id)
+.value,
+
+description:
+document
+.getElementById("d"+id)
+.value,
+
+video_url:
+document
+.getElementById("v"+id)
+.value||null,
+
+pdf_url:
+document
+.getElementById("p"+id)
+.value||null,
+
+lesson_order:1
+
+})
+
+}
+);
+
+
+alert(
+"✅ Lesson add हो गया"
+);
+
+
+lessons(id);
+
+
+}
+catch(x){
+
+alert(x.message);
+
+}
+
+}
+
+
+/* LOAD LESSONS */
+
+async function lessons(id){
+
+try{
+
+let a =
+await api(
+"/rest/v1/lessons?course_id=eq."
++
+encodeURIComponent(id)
++
+"&select=id,title,description,video_url,pdf_url&order=lesson_order"
+);
+
+
+document
+.getElementById("l"+id)
+.innerHTML =
+
+a.map(x=>`
+
+<div class="lesson">
+
+<b>
+📖 ${esc(x.title)}
+</b>
+
+<p>
+${esc(x.description||"")}
+</p>
+
+
+${
+x.video_url
+?
+`🎥 <a href="${esc(x.video_url)}" target="_blank">Video</a>`
+:
+""
+}
+
+
+${
+x.pdf_url
+?
+` 📄 <a href="${esc(x.pdf_url)}" target="_blank">PDF</a>`
+:
+""
+}
+
+</div>
+
+`).join("")
+||
+"कोई lesson नहीं";
+
+
+}
+catch(x){
+
+document
+.getElementById("l"+id)
+.textContent =
+"❌ "+x.message;
+
+}
+
+}
+
+
+/* DELETE COURSE */
+
+async function del(id){
+
+if(
+!confirm(
+"Course delete करें?"
+)
+){
+
+return;
+
+}
+
+
+try{
+
+await api(
+"/rest/v1/courses?id=eq."
++
+encodeURIComponent(id),
+{
+method:"DELETE"
+}
+);
+
+
+load();
+
+
+}
+catch(x){
+
+alert(x.message);
+
+}
+
+}
+
+
+/* LOGOUT */
 
 function logout(){
 
-localStorage.removeItem("admin_token");
+T="";
+
+localStorage.removeItem(
+"admin_token"
+);
+
+localStorage.removeItem(
+"admin_user_id"
+);
+
 location.reload();
 
 }
 
+
+/* ESCAPE HTML */
+
 function esc(s){
 
-return String(s||"").replace(
+return String(s||"")
+.replace(
 /[&<>"']/g,
-m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])
+
+m=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[m])
+
 );
 
 }
+
+
+/* START */
+
+checkRecoveryLink();
+
+restoreSession();
 
 </script>
 
