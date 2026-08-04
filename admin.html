@@ -7,28 +7,148 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7ff;color:#182033}
-header{background:linear-gradient(135deg,#5b2cff,#8d4cff);color:#fff;padding:28px 6%;box-shadow:0 5px 20px #0002}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f7ff;
+color:#182033
+}
+
+header{
+background:linear-gradient(135deg,#5b2cff,#8d4cff);
+color:white;
+padding:28px 6%;
+box-shadow:0 5px 20px #0002
+}
+
 header h1{margin:0 0 6px}
-main{padding:25px 6%;max-width:1100px;margin:auto}
-.box,.course{background:#fff;padding:20px;margin:18px 0;border-radius:16px;box-shadow:0 6px 22px #0001}
-input,textarea{width:100%;padding:13px;margin:7px 0;border:1px solid #d5d8e5;border-radius:9px;font-size:15px;font-family:inherit}
-textarea{min-height:90px;resize:vertical}
-button{padding:12px 18px;border:0;border-radius:9px;background:#6633ee;color:#fff;font-size:15px;cursor:pointer;margin:5px 3px}
-button:hover{opacity:.9}
-.red{background:#e53935}.green{background:#159447}.orange{background:#f57c00}.blue{background:#1976d2}
+
+main{
+padding:25px 6%;
+max-width:1100px;
+margin:auto
+}
+
+.box,.course{
+background:white;
+padding:20px;
+margin:18px 0;
+border-radius:16px;
+box-shadow:0 6px 22px #0001
+}
+
+input,textarea{
+width:100%;
+padding:13px;
+margin:7px 0;
+border:1px solid #d5d8e5;
+border-radius:9px;
+font-size:15px;
+font-family:inherit
+}
+
+textarea{
+min-height:90px;
+resize:vertical
+}
+
+button{
+padding:12px 18px;
+border:0;
+border-radius:9px;
+background:#6633ee;
+color:white;
+font-size:15px;
+cursor:pointer;
+margin:5px 3px
+}
+
+.red{background:#e53935}
+.green{background:#159447}
+.orange{background:#f57c00}
+.blue{background:#1976d2}
+
 .hide{display:none!important}
-.msg{font-weight:bold;margin-top:12px}
-.lesson{background:#f0edff;padding:15px;margin:10px 0;border-radius:10px}
-.price-box{background:#f7f4ff;padding:15px;border-radius:12px;margin:12px 0}
-.original{text-decoration:line-through;color:#888}
-.offer{color:#6633ee;font-size:24px;font-weight:bold}
-.coupon{background:#eaf8ef;padding:12px;border-radius:9px;margin-top:10px}
-.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#6633ee;color:#fff;font-size:12px;margin:3px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.editbox{background:#fff8e8;border:1px solid #ffd27a;padding:15px;border-radius:12px;margin-top:12px}
-hr{border:0;border-top:1px solid #eee;margin:20px 0}
-a{color:#6633ee;font-weight:bold;text-decoration:none;margin-right:12px}
+
+.msg{
+font-weight:bold;
+margin-top:12px
+}
+
+.lesson{
+background:#f0edff;
+padding:15px;
+margin:10px 0;
+border-radius:10px
+}
+
+.price-box{
+background:#f7f4ff;
+padding:15px;
+border-radius:12px;
+margin:12px 0
+}
+
+.original{
+text-decoration:line-through;
+color:#888
+}
+
+.offer{
+color:#6633ee;
+font-size:24px;
+font-weight:bold
+}
+
+.coupon{
+background:#eaf8ef;
+padding:12px;
+border-radius:9px;
+margin-top:10px
+}
+
+.editbox{
+background:#fff8e8;
+padding:15px;
+border-radius:12px;
+margin-top:12px
+}
+
+.badge{
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+background:#6633ee;
+color:white;
+font-size:12px;
+margin:3px
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
+}
+
+label{
+font-weight:bold
+}
+
+hr{
+border:0;
+border-top:1px solid #eee;
+margin:20px 0
+}
+
+a{
+color:#6633ee;
+font-weight:bold;
+text-decoration:none;
+margin-right:12px
+}
 </style>
 </head>
 
@@ -42,160 +162,277 @@ a{color:#6633ee;font-weight:bold;text-decoration:none;margin-right:12px}
 <main>
 
 <!-- LOGIN -->
+
 <div id="login" class="box">
+
 <h2>🔐 Admin Login</h2>
 
-<input id="email" type="email" placeholder="Admin Email">
-<input id="pass" type="password" placeholder="Password">
+<input id="email"
+type="email"
+placeholder="Admin Gmail">
+
+<input id="pass"
+type="password"
+placeholder="Password">
 
 <button onclick="loginAdmin()">🔐 Login</button>
-<button class="orange" onclick="showForgot()">🔑 Forgot Password?</button>
+
+<button class="orange"
+onclick="showForgot()">
+🔑 Forgot Password?
+</button>
 
 <p id="msg" class="msg"></p>
+
 </div>
 
 
 <!-- FORGOT -->
+
 <div id="forgot" class="box hide">
-<h2>🔑 Reset Admin Password</h2>
 
-<input id="forgotEmail" type="email" placeholder="Admin Email">
+<h2>🔑 Admin Password Reset</h2>
 
-<button onclick="sendReset()">📧 Send Reset Link</button>
-<button class="orange" onclick="backLogin()">⬅ Back to Login</button>
+<p>
+केवल registered Admin Gmail से password reset होगा।
+</p>
+
+<input id="forgotEmail"
+type="email"
+placeholder="Registered Admin Gmail">
+
+<button onclick="sendReset()">
+📧 Send Reset Link
+</button>
+
+<button class="orange"
+onclick="backLogin()">
+⬅ Back
+</button>
 
 <p id="forgotMsg" class="msg"></p>
+
 </div>
 
 
 <!-- NEW PASSWORD -->
+
 <div id="newPassword" class="box hide">
+
 <h2>🔄 Set New Password</h2>
 
-<input id="newPass" type="password" placeholder="New Password">
-<input id="newPass2" type="password" placeholder="Confirm New Password">
+<input id="newPass"
+type="password"
+placeholder="New Password">
 
-<button onclick="updatePassword()">🔐 Update Password</button>
+<input id="newPass2"
+type="password"
+placeholder="Confirm New Password">
+
+<button onclick="updatePassword()">
+🔐 Update Password
+</button>
 
 <p id="newMsg" class="msg"></p>
+
 </div>
 
 
-<!-- PANEL -->
+<!-- ADMIN PANEL -->
+
 <div id="panel" class="hide">
 
 <div class="topbar">
+
 <div>
 <h2>📚 Admin Dashboard</h2>
 <p>Course और Lesson Management</p>
 </div>
 
-<button class="red" onclick="logout()">🚪 Logout</button>
+<button class="red"
+onclick="logout()">
+🚪 Logout
+</button>
+
 </div>
 
 
 <!-- ADD COURSE -->
+
 <div class="box">
 
 <h2>➕ Add New Course</h2>
 
-<input id="ct" placeholder="Course Title">
-<textarea id="cd" placeholder="Course Description"></textarea>
+<input id="ct"
+placeholder="Course Title">
+
+<textarea id="cd"
+placeholder="Course Description"></textarea>
 
 <h3>💰 Course Pricing</h3>
 
-<input id="op" type="number" min="0" placeholder="Original Price ₹">
-<input id="cp" type="number" min="0" placeholder="Offer Price ₹">
+<input id="op"
+type="number"
+min="0"
+placeholder="Original Price ₹">
+
+<input id="cp"
+type="number"
+min="0"
+placeholder="Offer Price ₹">
 
 <h3>🎟️ Coupon / Discount</h3>
 
-<input id="cc" placeholder="Coupon Code जैसे DIGI50">
+<input id="cc"
+placeholder="Coupon Code जैसे DIGI50">
 
-<input id="cv" type="number" min="0" max="100"
+<input id="cv"
+type="number"
+min="0"
+max="100"
 placeholder="Discount %">
 
 <label>Coupon Expiry:</label>
-<input id="ce" type="datetime-local">
 
-<input id="cl" type="number" min="0"
+<input id="ce"
+type="datetime-local">
+
+<input id="cl"
+type="number"
+min="0"
 placeholder="Coupon Usage Limit (0 = Unlimited)">
 
 <label style="display:block;margin:12px 0">
-<input id="ca" type="checkbox" style="width:auto">
+
+<input id="ca"
+type="checkbox"
+style="width:auto">
+
 Coupon Active
+
 </label>
 
-<button onclick="addCourse()">🚀 Add Course</button>
+<button onclick="addCourse()">
+🚀 Add Course
+</button>
 
 </div>
 
 
-<!-- COURSES -->
-<div id="courses">⏳ Courses loading...</div>
+<div id="courses">
+⏳ Courses loading...
+</div>
 
 </div>
+
 </main>
 
 
 <script>
 
-const U="https://qobwcoopjubdloduxgrz.supabase.co";
+/* ===============================
+SUPABASE
+================================ */
 
-const K="sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+const U =
+"https://qobwcoopjubdloduxgrz.supabase.co";
 
-let T=localStorage.getItem("admin_token")||"";
+const K =
+"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+
+let T =
+localStorage.getItem("admin_token") || "";
 
 
-/* API */
+/* ===============================
+API
+================================ */
+
 async function api(path,opt={}){
 
-const r=await fetch(U+path,{
+const response =
+await fetch(
+U+path,
+{
 ...opt,
+
 headers:{
 apikey:K,
-Authorization:"Bearer "+(T||K),
-"Content-Type":"application/json",
+
+Authorization:
+"Bearer "+(T||K),
+
+"Content-Type":
+"application/json",
+
 ...(opt.headers||{})
 }
-});
-
-const text=await r.text();
-
-let d=null;
-try{d=text?JSON.parse(text):null}
-catch{d=text}
-
-if(!r.ok){
-throw new Error(
-d?.msg||d?.message||d?.hint||
-d?.error_description||text||"Supabase Error"
+}
 );
+
+const text =
+await response.text();
+
+let data=null;
+
+try{
+data=text?JSON.parse(text):null;
+}
+catch{
+data=text;
 }
 
-return d;
+if(!response.ok){
+
+throw new Error(
+data?.msg ||
+data?.message ||
+data?.hint ||
+data?.error_description ||
+text ||
+"Supabase Error"
+);
+
+}
+
+return data;
 }
 
 
-/* LOGIN */
+/* ===============================
+LOGIN
+================================ */
+
 async function loginAdmin(){
 
-const email=document.getElementById("email").value.trim();
-const password=document.getElementById("pass").value;
-const msg=document.getElementById("msg");
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("pass").value;
+
+const msg =
+document.getElementById("msg");
 
 if(!email||!password){
-msg.textContent="❌ Email और Password डालें";
+
+msg.textContent=
+"❌ Email और Password डालें";
+
 return;
 }
 
-msg.textContent="⏳ Login हो रहा है...";
+msg.textContent=
+"⏳ Login हो रहा है...";
 
 try{
 
-const d=await api(
+const data =
+await api(
 "/auth/v1/token?grant_type=password",
 {
 method:"POST",
+
 body:JSON.stringify({
 email:email,
 password:password
@@ -203,241 +440,469 @@ password:password
 }
 );
 
-T=d.access_token;
+T=data.access_token;
 
-const a=await api(
+
+/* Admin check */
+
+const admins =
+await api(
 "/rest/v1/admins?id=eq."+
-encodeURIComponent(d.user.id)+
-"&select=id,name"
+encodeURIComponent(data.user.id)+
+"&select=id,name,email"
 );
 
-if(!a.length)throw new Error("यह User Admin नहीं है");
+if(!admins||!admins.length){
 
-localStorage.setItem("admin_token",T);
-localStorage.setItem("admin_user_id",d.user.id);
+T="";
+
+throw new Error(
+"❌ यह User Admin नहीं है"
+);
+}
+
+
+/* Gmail match */
+
+if(
+admins[0].email &&
+admins[0].email.toLowerCase() !==
+email.toLowerCase()
+){
+
+T="";
+
+throw new Error(
+"❌ Admin Gmail match नहीं है"
+);
+}
+
+localStorage.setItem(
+"admin_token",T
+);
+
+localStorage.setItem(
+"admin_user_id",
+data.user.id
+);
 
 showPanel();
 load();
 
-}catch(e){
-msg.textContent="❌ "+e.message;
 }
+catch(error){
+
+msg.textContent=
+"❌ "+error.message;
+}
+
 }
 
 
-/* FORGOT */
+/* ===============================
+FORGOT
+================================ */
+
 function showForgot(){
 
-document.getElementById("login").classList.add("hide");
-document.getElementById("newPassword").classList.add("hide");
-document.getElementById("forgot").classList.remove("hide");
+document.getElementById("login")
+.classList.add("hide");
 
-const e=document.getElementById("email").value.trim();
+document.getElementById("newPassword")
+.classList.add("hide");
 
-if(e)document.getElementById("forgotEmail").value=e;
+document.getElementById("forgot")
+.classList.remove("hide");
+
+const old =
+document.getElementById("email")
+.value.trim();
+
+if(old){
+
+document.getElementById("forgotEmail")
+.value=old;
+}
+
 }
 
 
 function backLogin(){
 
-document.getElementById("forgot").classList.add("hide");
-document.getElementById("newPassword").classList.add("hide");
-document.getElementById("login").classList.remove("hide");
+document.getElementById("forgot")
+.classList.add("hide");
+
+document.getElementById("newPassword")
+.classList.add("hide");
+
+document.getElementById("login")
+.classList.remove("hide");
+
 }
 
 
-/* RESET EMAIL */
+/* ===============================
+ADMIN EMAIL RESET
+================================ */
+
 async function sendReset(){
 
-const email=document.getElementById("forgotEmail").value.trim();
-const msg=document.getElementById("forgotMsg");
+const email =
+document.getElementById("forgotEmail")
+.value.trim().toLowerCase();
+
+const message =
+document.getElementById("forgotMsg");
 
 if(!email){
-msg.textContent="❌ Admin Email डालें";
+
+message.textContent=
+"❌ Admin Gmail डालें";
+
 return;
 }
 
-msg.textContent="⏳ Reset email भेजा जा रहा है...";
+message.textContent=
+"⏳ Admin check हो रहा है...";
 
 try{
 
-const redirect=location.origin+location.pathname;
+/*
+पहले admins table में Gmail check
+*/
 
-const r=await fetch(U+"/auth/v1/recover",{
+const admins =
+await api(
+"/rest/v1/admins?email=eq."+
+encodeURIComponent(email)+
+"&select=id,email"
+);
+
+if(!admins||!admins.length){
+
+message.textContent=
+"❌ यह Gmail registered Admin नहीं है।";
+
+return;
+}
+
+
+/*
+अब ही reset email भेजेंगे
+*/
+
+message.textContent=
+"⏳ Reset email भेजा जा रहा है...";
+
+const redirect =
+location.origin+
+location.pathname;
+
+const response =
+await fetch(
+U+"/auth/v1/recover",
+{
 method:"POST",
+
 headers:{
 apikey:K,
 "Content-Type":"application/json"
 },
+
 body:JSON.stringify({
 email:email,
 redirect_to:redirect
 })
-});
+}
+);
 
-const text=await r.text();
+const text =
+await response.text();
 
-if(!r.ok){
+let data=null;
 
-let d;
-try{d=JSON.parse(text)}catch{d={message:text}}
-
-throw new Error(d.msg||d.message||text);
+try{
+data=text?JSON.parse(text):null;
+}
+catch{
+data=text;
 }
 
-msg.textContent="✅ Reset link भेज दिया गया। Email check करें।";
+if(!response.ok){
 
-}catch(e){
-msg.textContent="❌ "+e.message;
+throw new Error(
+data?.msg||
+data?.message||
+data?.error_description||
+text||
+"Reset email नहीं भेजा गया"
+);
+
 }
+
+message.textContent=
+"✅ Valid Admin है। Reset link Gmail पर भेज दिया गया।";
+
+}
+catch(error){
+
+message.textContent=
+"❌ "+error.message;
+}
+
 }
 
 
-/* RECOVERY */
+/* ===============================
+RECOVERY LINK
+================================ */
+
 function checkRecoveryLink(){
 
-const hash=location.hash.substring(1);
+const hash=
+location.hash.substring(1);
 
 if(!hash)return;
 
-const p=new URLSearchParams(hash);
+const params=
+new URLSearchParams(hash);
 
-if(p.get("type")==="recovery"&&p.get("access_token")){
+const type=
+params.get("type");
 
-T=p.get("access_token");
+const access=
+params.get("access_token");
 
-document.getElementById("login").classList.add("hide");
-document.getElementById("forgot").classList.add("hide");
-document.getElementById("newPassword").classList.remove("hide");
+if(
+type==="recovery" &&
+access
+){
+
+T=access;
+
+document.getElementById("login")
+.classList.add("hide");
+
+document.getElementById("forgot")
+.classList.add("hide");
+
+document.getElementById("newPassword")
+.classList.remove("hide");
 }
+
 }
 
 
-/* UPDATE PASSWORD */
+/* ===============================
+UPDATE PASSWORD
+================================ */
+
 async function updatePassword(){
 
-const p1=document.getElementById("newPass").value;
-const p2=document.getElementById("newPass2").value;
-const msg=document.getElementById("newMsg");
+const p1=
+document.getElementById("newPass").value;
+
+const p2=
+document.getElementById("newPass2").value;
+
+const msg=
+document.getElementById("newMsg");
 
 if(!p1||!p2){
-msg.textContent="❌ दोनों password डालें";
+
+msg.textContent=
+"❌ दोनों password डालें";
+
 return;
 }
 
 if(p1.length<6){
-msg.textContent="❌ Password कम से कम 6 characters का रखें";
+
+msg.textContent=
+"❌ Password कम से कम 6 characters रखें";
+
 return;
 }
 
 if(p1!==p2){
-msg.textContent="❌ दोनों password समान नहीं हैं";
+
+msg.textContent=
+"❌ दोनों password समान नहीं हैं";
+
 return;
 }
 
-msg.textContent="⏳ Updating...";
+msg.textContent=
+"⏳ Updating...";
 
 try{
 
-await api("/auth/v1/user",{
+await api(
+"/auth/v1/user",
+{
 method:"PUT",
-body:JSON.stringify({password:p1})
-});
 
-msg.textContent="✅ Password successfully update हो गया।";
+body:JSON.stringify({
+password:p1
+})
+}
+);
+
+msg.textContent=
+"✅ Password successfully update हो गया।";
 
 setTimeout(()=>{
-history.replaceState(null,"",location.pathname);
+
+history.replaceState(
+null,
+"",
+location.pathname
+);
+
 backLogin();
-},1200);
 
-}catch(e){
-msg.textContent="❌ "+e.message;
+},1500);
+
 }
+catch(error){
+
+msg.textContent=
+"❌ "+error.message;
+}
+
 }
 
 
-/* PANEL */
+/* ===============================
+SHOW PANEL
+================================ */
+
 function showPanel(){
 
-document.getElementById("login").classList.add("hide");
-document.getElementById("forgot").classList.add("hide");
-document.getElementById("newPassword").classList.add("hide");
-document.getElementById("panel").classList.remove("hide");
+document.getElementById("login")
+.classList.add("hide");
+
+document.getElementById("forgot")
+.classList.add("hide");
+
+document.getElementById("newPassword")
+.classList.add("hide");
+
+document.getElementById("panel")
+.classList.remove("hide");
+
 }
 
 
-/* RESTORE */
+/* ===============================
+RESTORE SESSION
+================================ */
+
 async function restoreSession(){
 
 if(!T)return;
 
 try{
 
-const user=await api("/auth/v1/user");
+const user=
+await api("/auth/v1/user");
 
-const a=await api(
+const admins=
+await api(
 "/rest/v1/admins?id=eq."+
 encodeURIComponent(user.id)+
-"&select=id,name"
+"&select=id,name,email"
 );
 
-if(a.length){
+if(admins&&admins.length){
+
 showPanel();
 load();
+
 }
 
-}catch(e){
+}
+catch(error){
 
 T="";
 
 localStorage.removeItem("admin_token");
 localStorage.removeItem("admin_user_id");
+
 }
+
 }
 
 
-/* LOAD COURSES */
+/* ===============================
+LOAD COURSES
+================================ */
+
 async function load(){
 
-const box=document.getElementById("courses");
+const box=
+document.getElementById("courses");
 
-box.innerHTML="⏳ Courses loading...";
+box.innerHTML=
+"⏳ Courses loading...";
 
 try{
 
-const courses=await api(
+const courses=
+await api(
 "/rest/v1/courses?select=*&order=created_at.desc"
 );
 
-if(!courses.length){
+if(!courses||!courses.length){
 
-box.innerHTML=`
+box.innerHTML=
+`
 <div class="box">
 <h3>📚 अभी कोई Course नहीं है</h3>
-</div>`;
+</div>
+`;
+
 return;
 }
 
-box.innerHTML=courses.map(courseHTML).join("");
+box.innerHTML=
+courses.map(courseHTML).join("");
 
-courses.forEach(c=>lessons(c.id));
+courses.forEach(
+c=>lessons(c.id)
+);
 
-}catch(e){
-
-box.innerHTML=`
-<div class="box">❌ ${esc(e.message)}</div>`;
 }
+catch(error){
+
+box.innerHTML=
+`
+<div class="box">
+❌ ${esc(error.message)}
+</div>
+`;
+}
+
 }
 
 
-/* COURSE HTML */
+/* ===============================
+COURSE HTML
+================================ */
+
 function courseHTML(c){
 
-const original=Number(c.original_price||0);
-const offer=Number(c.offer_price??c.price??0);
+const original=
+Number(c.original_price||0);
 
-return`
+const offer=
+Number(
+c.offer_price ??
+c.price ??
+0
+);
+
+return `
 
 <div class="course">
 
@@ -447,473 +912,721 @@ return`
 
 <div class="price-box">
 
-${original>offer?
-`<div class="original">Original Price: ₹${original}</div>`:""}
+<div class="original">
+Original Price: ₹${original}
+</div>
 
-<div class="offer">🔥 Offer Price: ₹${offer}</div>
+<div class="offer">
+🔥 Offer Price: ₹${offer}
+</div>
 
-${original>offer?
-`<span class="badge">SAVE ₹${original-offer}</span>`:""}
+${
+original>offer
+?
+`
+<span class="badge">
+SAVE ₹${original-offer}
+</span>
+`
+:""
+}
 
 </div>
 
-${c.coupon_code?`
+${
+c.coupon_code
+?
+`
 <div class="coupon">
-🎟️ Coupon: <b>${esc(c.coupon_code)}</b>
-<br>
-💸 Discount: ${Number(c.coupon_value||0)}%
-<br>
-${c.coupon_active?"🟢 Active":"🔴 Inactive"}
-</div>`:""}
 
-<hr>
+🎟️ Coupon:
+<b>${esc(c.coupon_code)}</b>
 
-<button class="blue"
-onclick="toggleCourseEdit('${c.id}')">
-✏️ Edit Course / Offer
+<br>
+
+💸 Discount:
+${Number(c.coupon_value||0)}%
+
+<br>
+
+${
+c.coupon_active
+?"🟢 Active":"🔴 Inactive"
+}
+
+</div>
+`
+:""
+}
+
+
+/* COURSE BUTTONS */
+
+<button
+class="blue"
+onclick="editCourse('${c.id}')">
+✏️ Edit Course
 </button>
 
 <button
-onclick="toggleAddLesson('${c.id}')">
-➕ Add Lesson
-</button>
-
-<button class="red"
+class="red"
 onclick="deleteCourse('${c.id}')">
 🗑️ Delete Course
 </button>
 
 
 <!-- COURSE EDIT -->
-<div id="courseEdit_${c.id}" class="editbox hide">
 
-<h3>✏️ Edit Course / Offer / Coupon</h3>
+<div
+id="ec${c.id}"
+class="editbox hide">
 
-<input id="title_${c.id}"
-value="${escAttr(c.title)}"
+<h3>✏️ Edit Course</h3>
+
+<input
+id="et${c.id}"
+value="${attr(c.title)}"
 placeholder="Course Title">
 
-<textarea id="desc_${c.id}"
+<textarea
+id="ed${c.id}"
 placeholder="Description">${esc(c.description||"")}</textarea>
 
-<h3>💰 Pricing</h3>
-
-<input id="original_${c.id}"
+<input
+id="eop${c.id}"
 type="number"
 value="${original}"
 placeholder="Original Price">
 
-<input id="offer_${c.id}"
+<input
+id="ecp${c.id}"
 type="number"
 value="${offer}"
 placeholder="Offer Price">
 
-<h3>🎟️ Coupon</h3>
+<h4>🎟️ Coupon</h4>
 
-<input id="coupon_${c.id}"
-value="${escAttr(c.coupon_code||"")}"
+<input
+id="ecc${c.id}"
+value="${attr(c.coupon_code||"")}"
 placeholder="Coupon Code">
 
-<input id="discount_${c.id}"
+<input
+id="ecv${c.id}"
 type="number"
 min="0"
 max="100"
 value="${Number(c.coupon_value||0)}"
 placeholder="Discount %">
 
-<label>Coupon Expiry</label>
-
-<input id="expiry_${c.id}"
+<input
+id="ece${c.id}"
 type="datetime-local"
-value="${dateTimeLocal(c.coupon_expiry)}">
+value="${dateValue(c.coupon_expiry)}">
 
-<input id="limit_${c.id}"
+<input
+id="ecl${c.id}"
 type="number"
 min="0"
 value="${Number(c.coupon_limit||0)}"
 placeholder="Usage Limit">
 
-<label style="display:block;margin:12px 0">
-
-<input id="active_${c.id}"
+<label>
+<input
+id="eca${c.id}"
 type="checkbox"
 style="width:auto"
 ${c.coupon_active?"checked":""}>
-
 Coupon Active
-
 </label>
 
-<button class="green"
+<br>
+
+<button
+class="green"
 onclick="saveCourse('${c.id}')">
 💾 Save Course
 </button>
 
+<button
+class="orange"
+onclick="editCourse('${c.id}')">
+Cancel
+</button>
+
+<p
+id="cm${c.id}"
+class="msg">
+</p>
+
 </div>
 
 
+<hr>
+
+
+<button
+onclick="showLessonForm('${c.id}')">
+➕ Add Lesson
+</button>
+
+
 <!-- ADD LESSON -->
-<div id="addLesson_${c.id}" class="editbox hide">
 
-<h3>➕ Add New Lesson</h3>
+<div
+id="f${c.id}"
+class="hide lesson">
 
-<input id="newTitle_${c.id}"
+<h3>📖 Add Lesson</h3>
+
+<input
+id="t${c.id}"
 placeholder="Lesson Title">
 
-<textarea id="newDesc_${c.id}"
+<textarea
+id="d${c.id}"
 placeholder="Lesson Description"></textarea>
 
-<input id="newVideo_${c.id}"
+<input
+id="v${c.id}"
 placeholder="YouTube Video URL">
 
-<input id="newPdf_${c.id}"
+<input
+id="p${c.id}"
 placeholder="PDF URL">
 
-<input id="newOrder_${c.id}"
+<input
+id="o${c.id}"
 type="number"
 min="1"
 placeholder="Lesson Order">
 
-<button class="green"
-onclick="saveNewLesson('${c.id}')">
+<button
+class="green"
+onclick="addLesson('${c.id}')">
 💾 Save Lesson
 </button>
 
 </div>
 
 
-<h3>📖 Existing Lessons</h3>
-
-<div id="lessons_${c.id}">
+<div id="l${c.id}">
 ⏳ Lessons loading...
 </div>
 
-</div>`;
+</div>
+
+`;
+
 }
 
 
-/* COURSE EDIT TOGGLE */
-function toggleCourseEdit(id){
+/* ===============================
+EDIT COURSE SHOW
+================================ */
+
+function editCourse(id){
 
 document
-.getElementById("courseEdit_"+id)
-.classList.toggle("hide");
+.getElementById("ec"+id)
+.classList
+.toggle("hide");
 
 }
 
 
-/* SAVE COURSE */
+/* ===============================
+SAVE COURSE
+================================ */
+
 async function saveCourse(id){
+
+const msg=
+document.getElementById("cm"+id);
 
 try{
 
-const title=document.getElementById("title_"+id).value.trim();
-const desc=document.getElementById("desc_"+id).value.trim();
+const title=
+document.getElementById("et"+id)
+.value.trim();
 
-const original=Number(
-document.getElementById("original_"+id).value
+const description=
+document.getElementById("ed"+id)
+.value.trim();
+
+const original=
+Number(
+document.getElementById("eop"+id).value
 )||0;
 
-const offer=Number(
-document.getElementById("offer_"+id).value
+const offer=
+Number(
+document.getElementById("ecp"+id).value
 )||0;
 
-const coupon=document.getElementById("coupon_"+id)
+const coupon=
+document.getElementById("ecc"+id)
 .value.trim().toUpperCase();
 
-const discount=Number(
-document.getElementById("discount_"+id).value
+const couponValue=
+Number(
+document.getElementById("ecv"+id).value
 )||0;
 
-const expiry=document.getElementById("expiry_"+id).value||null;
+const expiry=
+document.getElementById("ece"+id).value||null;
 
-const limit=Number(
-document.getElementById("limit_"+id).value
+const limit=
+Number(
+document.getElementById("ecl"+id).value
 )||0;
 
-const active=document.getElementById("active_"+id).checked;
+const active=
+document.getElementById("eca"+id).checked;
 
 if(!title){
-alert("❌ Course Title डालें");
+
+msg.textContent=
+"❌ Course Title डालें";
+
 return;
 }
 
-if(original>0&&offer>original){
-alert("❌ Offer Price Original Price से ज्यादा नहीं हो सकता");
+if(offer>original&&original>0){
+
+msg.textContent=
+"❌ Offer Price Original Price से ज्यादा है";
+
 return;
 }
 
-if(discount<0||discount>100){
-alert("❌ Discount 0 से 100% रखें");
+if(couponValue>100){
+
+msg.textContent=
+"❌ Discount 100% से ज्यादा नहीं";
+
 return;
 }
+
+msg.textContent=
+"⏳ Saving...";
 
 await api(
-"/rest/v1/courses?id=eq."+encodeURIComponent(id),
+"/rest/v1/courses?id=eq."+
+encodeURIComponent(id),
 {
 method:"PATCH",
-headers:{Prefer:"return=minimal"},
+
+headers:{
+Prefer:"return=minimal"
+},
+
 body:JSON.stringify({
+
 title:title,
-description:desc,
+
+description:description,
+
 price:offer,
+
 original_price:original,
+
 offer_price:offer,
-coupon_code:coupon||null,
+
+coupon_code:
+coupon||null,
+
 coupon_type:"percent",
-coupon_value:discount,
-coupon_expiry:expiry,
-coupon_limit:limit,
-coupon_active:active
+
+coupon_value:
+couponValue,
+
+coupon_expiry:
+expiry,
+
+coupon_limit:
+limit,
+
+coupon_active:
+active
+
 })
 }
 );
 
-alert("✅ Course successfully update हो गया");
+msg.textContent=
+"✅ Course updated";
 
-load();
-
-}catch(e){
-
-alert("❌ "+e.message);
+setTimeout(load,700);
 
 }
+catch(error){
+
+msg.textContent=
+"❌ "+error.message;
+}
+
 }
 
 
-/* ADD COURSE */
+/* ===============================
+ADD COURSE
+================================ */
+
 async function addCourse(){
 
 try{
 
-const title=document.getElementById("ct").value.trim();
-const desc=document.getElementById("cd").value.trim();
+const title=
+document.getElementById("ct")
+.value.trim();
 
-const original=Number(document.getElementById("op").value)||0;
-const offer=Number(document.getElementById("cp").value)||0;
+const description=
+document.getElementById("cd")
+.value.trim();
 
-const coupon=document.getElementById("cc").value
-.trim().toUpperCase();
+const original=
+Number(document.getElementById("op").value)||0;
 
-const discount=Number(document.getElementById("cv").value)||0;
+const offer=
+Number(document.getElementById("cp").value)||0;
 
-const expiry=document.getElementById("ce").value||null;
-const limit=Number(document.getElementById("cl").value)||0;
+const coupon=
+document.getElementById("cc")
+.value.trim().toUpperCase();
 
-const active=document.getElementById("ca").checked;
+const couponValue=
+Number(document.getElementById("cv").value)||0;
+
+const expiry=
+document.getElementById("ce").value||null;
+
+const limit=
+Number(document.getElementById("cl").value)||0;
+
+const active=
+document.getElementById("ca").checked;
 
 if(!title){
+
 alert("❌ Course Title डालें");
 return;
 }
 
-if(original>0&&offer>original){
-alert("❌ Offer Price Original Price से ज्यादा नहीं हो सकता");
+if(offer>original&&original>0){
+
+alert(
+"❌ Offer Price Original Price से ज्यादा नहीं हो सकता"
+);
+
 return;
 }
 
-if(discount>100){
-alert("❌ Discount 100% से ज्यादा नहीं");
+if(couponValue>100){
+
+alert(
+"❌ Discount 100% से ज्यादा नहीं हो सकता"
+);
+
 return;
 }
 
-await api("/rest/v1/courses",{
+await api(
+"/rest/v1/courses",
+{
 method:"POST",
-headers:{Prefer:"return=minimal"},
+
+headers:{
+Prefer:"return=minimal"
+},
+
 body:JSON.stringify({
+
 title:title,
-description:desc,
+
+description:description,
+
 price:offer,
+
 original_price:original,
+
 offer_price:offer,
+
 coupon_code:coupon||null,
+
 coupon_type:"percent",
-coupon_value:discount,
+
+coupon_value:couponValue,
+
 coupon_expiry:expiry,
+
 coupon_limit:limit,
+
 coupon_active:active
+
 })
-});
+}
+);
 
-alert("✅ Course successfully add हो गया");
+alert(
+"✅ Course successfully add हो गया"
+);
 
-["ct","cd","op","cp","cc","cv","ce","cl"]
-.forEach(id=>document.getElementById(id).value="");
+[
+"ct","cd","op","cp","cc","cv","ce","cl"
+]
+.forEach(
+id=>document.getElementById(id).value=""
+);
 
 document.getElementById("ca").checked=false;
 
 load();
 
-}catch(e){
+}
+catch(error){
 
-alert("❌ "+e.message);
+alert("❌ "+error.message);
 
 }
+
 }
 
 
-/* ADD LESSON FORM */
-function toggleAddLesson(id){
+/* ===============================
+ADD LESSON FORM
+================================ */
+
+function showLessonForm(id){
 
 document
-.getElementById("addLesson_"+id)
-.classList.toggle("hide");
+.getElementById("f"+id)
+.classList
+.toggle("hide");
 
 }
 
 
-/* SAVE NEW LESSON */
-async function saveNewLesson(courseId){
+/* ===============================
+ADD LESSON
+================================ */
+
+async function addLesson(courseId){
 
 try{
 
-const title=document
-.getElementById("newTitle_"+courseId)
+const title=
+document.getElementById("t"+courseId)
 .value.trim();
 
-const desc=document
-.getElementById("newDesc_"+courseId)
+const description=
+document.getElementById("d"+courseId)
 .value.trim();
 
-const video=document
-.getElementById("newVideo_"+courseId)
+const video=
+document.getElementById("v"+courseId)
 .value.trim();
 
-const pdf=document
-.getElementById("newPdf_"+courseId)
+const pdf=
+document.getElementById("p"+courseId)
 .value.trim();
 
-const order=Number(
-document.getElementById("newOrder_"+courseId).value
+const order=
+Number(
+document.getElementById("o"+courseId).value
 )||1;
 
 if(!title){
+
 alert("❌ Lesson Title डालें");
 return;
 }
 
-await api("/rest/v1/lessons",{
+await api(
+"/rest/v1/lessons",
+{
 method:"POST",
-headers:{Prefer:"return=minimal"},
-body:JSON.stringify({
-course_id:courseId,
-title:title,
-description:desc,
-video_url:video||null,
-pdf_url:pdf||null,
-lesson_order:order
-})
-});
 
-alert("✅ Lesson add हो गया");
+headers:{
+Prefer:"return=minimal"
+},
+
+body:JSON.stringify({
+
+course_id:courseId,
+
+title:title,
+
+description:description,
+
+video_url:video||null,
+
+pdf_url:pdf||null,
+
+lesson_order:order
+
+})
+}
+);
+
+alert(
+"✅ Lesson successfully add हो गया"
+);
 
 lessons(courseId);
 
-}catch(e){
+}
+catch(error){
 
-alert("❌ "+e.message);
+alert("❌ "+error.message);
 
 }
+
 }
 
 
-/* LOAD EXISTING LESSONS */
+/* ===============================
+LOAD LESSONS
+================================ */
+
 async function lessons(courseId){
 
-const box=document.getElementById("lessons_"+courseId);
+const box=
+document.getElementById("l"+courseId);
 
 if(!box)return;
 
 try{
 
-const data=await api(
+const data=
+await api(
 "/rest/v1/lessons"+
-"?course_id=eq."+encodeURIComponent(courseId)+
-"&select=id,title,description,video_url,pdf_url,lesson_order"+
+"?course_id=eq."+
+encodeURIComponent(courseId)+
+"&select=*"+
 "&order=lesson_order.asc"
 );
 
-if(!data.length){
+if(!data||!data.length){
 
 box.innerHTML=
-`<div class="lesson">📖 अभी कोई lesson नहीं है।</div>`;
+`
+<div class="lesson">
+📖 अभी कोई lesson नहीं है।
+</div>
+`;
 
 return;
 }
 
+box.innerHTML=
+data.map(lessonHTML).join("");
 
-/*
- IMPORTANT:
- Edit button सीधे toggleLessonEdit(id) चलाता है।
- कोई JSON object onclick में नहीं भेजा जा रहा।
-*/
+}
+catch(error){
 
-box.innerHTML=data.map(l=>`
+box.innerHTML=
+`
+<div class="lesson">
+❌ ${esc(error.message)}
+</div>
+`;
+
+}
+
+}
+
+
+/* ===============================
+LESSON HTML
+================================ */
+
+function lessonHTML(l){
+
+return `
 
 <div class="lesson">
 
 <b>
-📖 Lesson ${esc(l.lesson_order||1)} :
+📖 Lesson ${esc(l.lesson_order||"")}
+:
 ${esc(l.title)}
 </b>
 
-<p>${esc(l.description||"")}</p>
+<p>
+${esc(l.description||"")}
+</p>
 
-${l.video_url?
-`🎥 <a href="${safeURL(l.video_url)}" target="_blank">Watch Video</a>`
-:""}
+${
+l.video_url
+?
+`
+🎥
+<a href="${safeURL(l.video_url)}"
+target="_blank"
+rel="noopener">
+Watch Video
+</a>
+`
+:""
+}
 
-${l.pdf_url?
-`📄 <a href="${safeURL(l.pdf_url)}" target="_blank">Open PDF</a>`
-:""}
+${
+l.pdf_url
+?
+`
+📄
+<a href="${safeURL(l.pdf_url)}"
+target="_blank"
+rel="noopener">
+Open PDF
+</a>
+`
+:""
+}
 
 <br>
 
 <button
 class="blue"
-onclick="toggleLessonEdit('${l.id}')">
-
+onclick="editLesson('${l.id}','${l.course_id}')">
 ✏️ Edit Lesson
-
 </button>
 
 <button
 class="red"
-onclick="deleteLesson('${l.id}','${courseId}')">
-
+onclick="deleteLesson('${l.id}','${l.course_id}')">
 🗑️ Delete Lesson
-
 </button>
 
 
-<!-- EXISTING LESSON EDIT BOX -->
 <div
-id="lessonEdit_${l.id}"
+id="el${l.id}"
 class="editbox hide">
 
-<h3>✏️ Edit Existing Lesson</h3>
+<h3>✏️ Edit Lesson</h3>
 
 <input
-id="lessonTitle_${l.id}"
-value="${escAttr(l.title)}"
+id="elt${l.id}"
+value="${attr(l.title)}"
 placeholder="Lesson Title">
 
 <textarea
-id="lessonDesc_${l.id}"
-placeholder="Lesson Description">${esc(l.description||"")}</textarea>
+id="eld${l.id}"
+placeholder="Description">${esc(l.description||"")}</textarea>
 
 <input
-id="lessonVideo_${l.id}"
-value="${escAttr(l.video_url||"")}"
-placeholder="YouTube Video URL">
+id="elv${l.id}"
+value="${attr(l.video_url||"")}"
+placeholder="Video URL">
 
 <input
-id="lessonPdf_${l.id}"
-value="${escAttr(l.pdf_url||"")}"
+id="elp${l.id}"
+value="${attr(l.pdf_url||"")}"
 placeholder="PDF URL">
 
 <input
-id="lessonOrder_${l.id}"
+id="elo${l.id}"
 type="number"
 min="1"
 value="${Number(l.lesson_order||1)}"
@@ -921,166 +1634,206 @@ placeholder="Lesson Order">
 
 <button
 class="green"
-onclick="saveLessonEdit('${l.id}','${courseId}')">
-
-💾 Save Changes
-
+onclick="saveLesson('${l.id}','${l.course_id}')">
+💾 Save Lesson
 </button>
 
-<button
-class="orange"
-onclick="toggleLessonEdit('${l.id}')">
-
-Cancel
-
-</button>
+<p
+id="lm${l.id}"
+class="msg">
+</p>
 
 </div>
 
 </div>
 
-`).join("");
-
-}catch(e){
-
-box.innerHTML=
-`<div class="lesson">❌ ${esc(e.message)}</div>`;
-
-}
-}
-
-
-/* ==========================================
-   EXISTING LESSON EDIT
-========================================== */
-
-function toggleLessonEdit(id){
-
-const box=document.getElementById("lessonEdit_"+id);
-
-if(!box){
-alert("❌ Edit box नहीं मिला");
-return;
-}
-
-box.classList.toggle("hide");
+`;
 
 }
 
 
-/* SAVE EXISTING LESSON */
-async function saveLessonEdit(id,courseId){
+/* ===============================
+EDIT LESSON SHOW
+================================ */
+
+function editLesson(id){
+
+document
+.getElementById("el"+id)
+.classList
+.toggle("hide");
+
+}
+
+
+/* ===============================
+SAVE LESSON
+================================ */
+
+async function saveLesson(id,courseId){
+
+const msg=
+document.getElementById("lm"+id);
 
 try{
 
-const title=document
-.getElementById("lessonTitle_"+id)
+const title=
+document.getElementById("elt"+id)
 .value.trim();
 
-const desc=document
-.getElementById("lessonDesc_"+id)
+const description=
+document.getElementById("eld"+id)
 .value.trim();
 
-const video=document
-.getElementById("lessonVideo_"+id)
+const video=
+document.getElementById("elv"+id)
 .value.trim();
 
-const pdf=document
-.getElementById("lessonPdf_"+id)
+const pdf=
+document.getElementById("elp"+id)
 .value.trim();
 
-const order=Number(
-document.getElementById("lessonOrder_"+id).value
+const order=
+Number(
+document.getElementById("elo"+id).value
 )||1;
 
 if(!title){
 
-alert("❌ Lesson Title डालें");
+msg.textContent=
+"❌ Lesson Title डालें";
+
 return;
 }
 
+msg.textContent=
+"⏳ Saving...";
+
 await api(
-"/rest/v1/lessons?id=eq."+encodeURIComponent(id),
+"/rest/v1/lessons?id=eq."+
+encodeURIComponent(id),
 {
 method:"PATCH",
-headers:{Prefer:"return=minimal"},
+
+headers:{
+Prefer:"return=minimal"
+},
+
 body:JSON.stringify({
+
 title:title,
-description:desc,
+
+description:description,
+
 video_url:video||null,
+
 pdf_url:pdf||null,
+
 lesson_order:order
+
 })
 }
 );
 
-alert("✅ Existing Lesson successfully update हो गया");
+msg.textContent=
+"✅ Lesson updated";
 
-lessons(courseId);
-
-}catch(e){
-
-alert("❌ "+e.message);
+setTimeout(
+()=>lessons(courseId),
+700
+);
 
 }
+catch(error){
+
+msg.textContent=
+"❌ "+error.message;
+
+}
+
 }
 
 
-/* DELETE LESSON */
+/* ===============================
+DELETE LESSON
+================================ */
+
 async function deleteLesson(id,courseId){
 
-if(!confirm("⚠️ क्या यह Lesson delete करना है?")){
-return;
-}
+if(!confirm(
+"⚠️ यह Lesson delete करें?"
+))return;
 
 try{
 
 await api(
-"/rest/v1/lessons?id=eq."+encodeURIComponent(id),
+"/rest/v1/lessons?id=eq."+
+encodeURIComponent(id),
 {
 method:"DELETE"
 }
 );
 
-alert("✅ Lesson delete हो गया");
+alert(
+"✅ Lesson delete हो गया"
+);
 
 lessons(courseId);
 
-}catch(e){
+}
+catch(error){
 
-alert("❌ "+e.message);
+alert(
+"❌ "+error.message
+);
 
 }
+
 }
 
 
-/* DELETE COURSE */
+/* ===============================
+DELETE COURSE
+================================ */
+
 async function deleteCourse(id){
 
-if(!confirm("⚠️ क्या पूरा Course delete करना है?")){
-return;
-}
+if(!confirm(
+"⚠️ पूरा Course delete करें?"
+))return;
 
 try{
 
 await api(
-"/rest/v1/courses?id=eq."+encodeURIComponent(id),
-{method:"DELETE"}
+"/rest/v1/courses?id=eq."+
+encodeURIComponent(id),
+{
+method:"DELETE"
+}
 );
 
-alert("✅ Course delete हो गया");
+alert(
+"✅ Course delete हो गया"
+);
 
 load();
 
-}catch(e){
+}
+catch(error){
 
-alert("❌ "+e.message);
+alert(
+"❌ "+error.message
+);
 
 }
+
 }
 
 
-/* LOGOUT */
+/* ===============================
+LOGOUT
+================================ */
+
 function logout(){
 
 T="";
@@ -1093,10 +1846,14 @@ location.reload();
 }
 
 
-/* HELPERS */
-function esc(v){
+/* ===============================
+HELPERS
+================================ */
 
-return String(v??"").replace(
+function esc(value){
+
+return String(value??"")
+.replace(
 /[&<>"']/g,
 m=>({
 "&":"&amp;",
@@ -1109,38 +1866,49 @@ m=>({
 
 }
 
-function escAttr(v){
-return esc(v);
+function attr(value){
+
+return esc(value)
+.replace(/`/g,"&#96;");
 }
 
-function safeURL(v){
+function safeURL(value){
 
-const u=String(v||"").trim();
+const url=
+String(value||"").trim();
 
-if(!/^https?:\/\//i.test(u))return "#";
+if(!/^https?:\/\//i.test(url))
+return "#";
 
-return u.replace(/"/g,"%22").replace(/'/g,"%27");
+return url
+.replace(/"/g,"%22")
+.replace(/'/g,"%27");
 }
 
-function dateTimeLocal(v){
+function dateValue(value){
 
-if(!v)return "";
+if(!value)return "";
 
-const d=new Date(v);
+try{
 
-if(isNaN(d.getTime()))return "";
+return new Date(value)
+.toISOString()
+.slice(0,16);
 
-const p=n=>String(n).padStart(2,"0");
+}
+catch{
 
-return d.getFullYear()+"-"+
-p(d.getMonth()+1)+"-"+
-p(d.getDate())+"T"+
-p(d.getHours())+":"+
-p(d.getMinutes());
+return "";
+
+}
+
 }
 
 
-/* START */
+/* ===============================
+START
+================================ */
+
 checkRecoveryLink();
 restoreSession();
 
