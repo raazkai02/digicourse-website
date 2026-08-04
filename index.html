@@ -3,35 +3,609 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>DigiCourse - Digital Courses</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7ff;color:#182033}
-nav{background:linear-gradient(90deg,#5b2cff,#8d4cff);color:white;padding:16px 6%;display:flex;justify-content:space-between;align-items:center}
-nav b{font-size:22px}nav a{color:white;text-decoration:none;margin-left:15px;font-weight:bold;font-size:13px}
-.hero{text-align:center;padding:65px 6%;background:#faf8ff}.hero h1{font-size:42px;margin:10px}.hero h1 span{color:#6633ee}.hero p{font-size:18px;color:#555}.btn{display:inline-block;background:#6633ee;color:white;text-decoration:none;padding:14px 24px;border-radius:10px;font-weight:bold;margin:8px}
-.special{background:#fff;padding:25px;text-align:center}.special a{display:inline-block;padding:13px 20px;border-radius:10px;text-decoration:none;font-weight:bold;margin:6px}
-.admin{background:#182033;color:#fff}.lms{background:#6633ee;color:#fff}
-section{padding:45px 6%}.title{text-align:center;font-size:30px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}.card{background:white;padding:22px;border-radius:16px;box-shadow:0 7px 25px #0001}.price{font-size:22px;color:#6633ee;font-weight:bold}.wa{background:#19b957!important;color:white!important}
-footer{background:#11101d;color:white;text-align:center;padding:25px}
+
+*{
+box-sizing:border-box
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f7ff;
+color:#182033
+}
+
+nav{
+background:linear-gradient(90deg,#5b2cff,#8d4cff);
+color:white;
+padding:16px 6%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap
+}
+
+nav b{
+font-size:22px
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:15px;
+font-weight:bold;
+font-size:13px
+}
+
+.hero{
+text-align:center;
+padding:65px 6%;
+background:#faf8ff
+}
+
+.hero h1{
+font-size:42px;
+margin:10px
+}
+
+.hero h1 span{
+color:#6633ee
+}
+
+.hero p{
+font-size:18px;
+color:#555
+}
+
+.btn{
+display:inline-block;
+background:#6633ee;
+color:white;
+text-decoration:none;
+padding:12px 20px;
+border-radius:10px;
+font-weight:bold;
+margin:6px;
+border:0;
+cursor:pointer
+}
+
+.special{
+background:#fff;
+padding:25px;
+text-align:center
+}
+
+.special a{
+display:inline-block;
+padding:13px 20px;
+border-radius:10px;
+text-decoration:none;
+font-weight:bold;
+margin:6px
+}
+
+.admin{
+background:#182033;
+color:#fff
+}
+
+.lms{
+background:#6633ee;
+color:#fff
+}
+
+section{
+padding:45px 6%
+}
+
+.title{
+text-align:center;
+font-size:30px
+}
+
+.cards{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(240px,1fr));
+gap:20px
+}
+
+.card{
+background:white;
+padding:22px;
+border-radius:16px;
+box-shadow:0 7px 25px #0001
+}
+
+.card h3{
+margin-top:0
+}
+
+.price{
+font-size:22px;
+color:#6633ee;
+font-weight:bold;
+margin:12px 0
+}
+
+.original{
+text-decoration:line-through;
+color:#888;
+font-size:14px
+}
+
+.badge{
+display:inline-block;
+background:#6633ee;
+color:white;
+padding:5px 9px;
+border-radius:20px;
+font-size:12px
+}
+
+.wa{
+background:#19b957!important;
+color:white!important
+}
+
+.loading{
+text-align:center;
+padding:30px;
+font-size:18px
+}
+
+.empty{
+text-align:center;
+background:white;
+padding:30px;
+border-radius:15px
+}
+
+footer{
+background:#11101d;
+color:white;
+text-align:center;
+padding:25px
+}
+
 </style>
 </head>
-<body>
-<nav><b>🚀 DigiCourse</b><div><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a></div></nav>
-<div class="hero"><h1>सीखिए नई Skills, <span>बनाइए अपना Future</span></h1><p>Practical digital courses सीखें और अपने career तथा online business को आगे बढ़ाएँ।</p><a class="btn" href="#courses">Courses देखें →</a></div>
 
-<div class="special">
-<h2>🎓 Student & Admin Area</h2>
-<a class="admin" href="admin.html">🔐 Admin Panel</a>
-<a class="lms" href="lms.html">🎓 Student LMS</a>
+
+<body>
+
+
+<!-- ================= NAV ================= -->
+
+<nav>
+
+<b>🚀 DigiCourse</b>
+
+<div>
+
+<a href="#courses">Courses</a>
+
+<a href="#about">About</a>
+
+<a href="#contact">Contact</a>
+
 </div>
 
-<section id="courses"><h2 class="title">🔥 Popular Courses</h2><div class="cards">
-<div class="card"><h3>💻 Web Development</h3><p>HTML, CSS और JavaScript से modern websites बनाना सीखें।</p><div class="price">₹499</div><a class="btn" href="#">View Details</a></div>
-<div class="card"><h3>📱 Android App Development</h3><p>अपना पहला Android application बनाना सीखें।</p><div class="price">₹699</div><a class="btn" href="#">View Details</a></div>
-<div class="card"><h3>📣 Digital Marketing</h3><p>Social media और online marketing की practical skills सीखें।</p><div class="price">₹399</div><a class="btn" href="#">View Details</a></div>
-</div></section>
+</nav>
 
-<section id="about" style="background:white;text-align:center"><h2>📚 हमारे बारे में</h2><p>DigiCourse का उद्देश्य practical digital skills को आसान भाषा में सिखाना है।</p></section>
-<section id="contact" style="background:#171326;color:white;text-align:center"><h2>📞 Course Enquiry</h2><p>Course खरीदने या जानकारी के लिए संपर्क करें।</p><a class="btn wa" href="#">💬 WhatsApp करें</a></section>
-<footer>© 2026 DigiCourse. All Rights Reserved.</footer>
-</body></html>
+
+<!-- ================= HERO ================= -->
+
+<div class="hero">
+
+<h1>
+सीखिए नई Skills,
+<span>बनाइए अपना Future</span>
+</h1>
+
+<p>
+Practical digital courses सीखें और अपने career
+तथा online business को आगे बढ़ाएँ।
+</p>
+
+<a
+class="btn"
+href="#courses">
+
+Courses देखें →
+</a>
+
+</div>
+
+
+<!-- ================= SPECIAL ================= -->
+
+<div class="special">
+
+<h2>🎓 Student & Admin Area</h2>
+
+<a
+class="admin"
+href="admin.html">
+
+🔐 Admin Panel
+
+</a>
+
+<a
+class="lms"
+href="lms.html">
+
+🎓 Student LMS
+
+</a>
+
+</div>
+
+
+<!-- ================= COURSES ================= -->
+
+<section id="courses">
+
+<h2 class="title">
+🔥 Popular Courses
+</h2>
+
+<div
+id="courseList"
+class="cards">
+
+<div class="loading">
+
+⏳ Courses loading...
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section
+id="about"
+style="background:white;text-align:center">
+
+<h2>
+📚 हमारे बारे में
+</h2>
+
+<p>
+DigiCourse का उद्देश्य practical digital skills
+को आसान भाषा में सिखाना है।
+</p>
+
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+
+<section
+id="contact"
+style="background:#171326;color:white;text-align:center">
+
+<h2>
+📞 Course Enquiry
+</h2>
+
+<p>
+Course खरीदने या जानकारी के लिए संपर्क करें।
+</p>
+
+<a
+class="btn wa"
+href="https://wa.me/919999999999"
+target="_blank">
+
+💬 WhatsApp करें
+
+</a>
+
+</section>
+
+
+<footer>
+
+© 2026 DigiCourse.
+All Rights Reserved.
+
+</footer>
+
+
+<script>
+
+/* ==========================================
+   SUPABASE CONFIG
+========================================== */
+
+const SUPABASE_URL =
+"https://qobwcoopjubdloduxgrz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+
+
+/* ==========================================
+   API
+========================================== */
+
+async function getCourses(){
+
+const response =
+await fetch(
+
+SUPABASE_URL +
+"/rest/v1/courses" +
+"?select=*" +
+"&order=created_at.desc",
+
+{
+
+headers:{
+
+apikey:SUPABASE_KEY,
+
+Authorization:
+"Bearer " + SUPABASE_KEY
+
+}
+
+}
+
+);
+
+
+if(!response.ok){
+
+throw new Error(
+"Courses load नहीं हो पाए"
+);
+
+}
+
+
+return await response.json();
+
+}
+
+
+/* ==========================================
+   LOAD COURSES
+========================================== */
+
+async function loadCourses(){
+
+const list =
+document.getElementById(
+"courseList"
+);
+
+try{
+
+const courses =
+await getCourses();
+
+
+if(
+!courses ||
+courses.length===0
+){
+
+list.innerHTML = `
+
+<div class="empty">
+
+<h3>
+📚 अभी कोई Course उपलब्ध नहीं है
+</h3>
+
+<p>
+Admin Panel से course add करें।
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+list.innerHTML =
+courses
+.map(courseCard)
+.join("");
+
+}
+
+catch(error){
+
+console.error(error);
+
+list.innerHTML = `
+
+<div class="empty">
+
+<h3>
+❌ Course load नहीं हो पाए
+</h3>
+
+<p>
+कृपया थोड़ी देर बाद फिर कोशिश करें।
+</p>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* ==========================================
+   COURSE CARD
+========================================== */
+
+function courseCard(course){
+
+const original =
+Number(
+course.original_price || 0
+);
+
+const offer =
+Number(
+course.offer_price ??
+course.price ??
+0
+);
+
+
+return `
+
+<div class="card">
+
+<h3>
+📚 ${esc(course.title)}
+</h3>
+
+<p>
+${esc(
+course.description ||
+"Practical digital course"
+)}
+</p>
+
+
+${
+original > offer
+?
+
+`
+<div class="original">
+
+Original Price:
+₹${original}
+
+</div>
+`
+
+:
+
+""
+
+}
+
+
+<div class="price">
+
+🔥 ₹${offer}
+
+</div>
+
+
+${
+original > offer
+?
+
+`
+<span class="badge">
+
+SAVE ₹${original-offer}
+
+</span>
+`
+
+:
+
+""
+
+}
+
+
+<br>
+
+
+<button
+class="btn"
+onclick="viewDetails('${course.id}')">
+
+👁️ View Details
+
+</button>
+
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================
+   VIEW DETAILS
+========================================== */
+
+function viewDetails(id){
+
+/*
+Course ID को URL में भेज रहे हैं
+*/
+
+window.location.href =
+"course.html?id=" +
+encodeURIComponent(id);
+
+}
+
+
+/* ==========================================
+   SECURITY / HTML ESCAPE
+========================================== */
+
+function esc(value){
+
+return String(
+value ?? ""
+)
+.replace(
+/[&<>"']/g,
+
+char => ({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[char])
+
+);
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadCourses();
+
+</script>
+
+</body>
+</html>
