@@ -3,14 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>DigiCourse - Digital Courses</title>
 
 <style>
-
-*{
-box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
 margin:0;
@@ -29,9 +25,7 @@ align-items:center;
 flex-wrap:wrap
 }
 
-nav b{
-font-size:22px
-}
+nav b{font-size:22px}
 
 nav a{
 color:white;
@@ -66,10 +60,10 @@ display:inline-block;
 background:#6633ee;
 color:white;
 text-decoration:none;
-padding:12px 20px;
+padding:14px 24px;
 border-radius:10px;
 font-weight:bold;
-margin:6px;
+margin:8px;
 border:0;
 cursor:pointer
 }
@@ -111,7 +105,7 @@ font-size:30px
 .cards{
 display:grid;
 grid-template-columns:
-repeat(auto-fit,minmax(240px,1fr));
+repeat(auto-fit,minmax(220px,1fr));
 gap:20px
 }
 
@@ -122,48 +116,15 @@ border-radius:16px;
 box-shadow:0 7px 25px #0001
 }
 
-.card h3{
-margin-top:0
-}
-
 .price{
 font-size:22px;
 color:#6633ee;
-font-weight:bold;
-margin:12px 0
-}
-
-.original{
-text-decoration:line-through;
-color:#888;
-font-size:14px
-}
-
-.badge{
-display:inline-block;
-background:#6633ee;
-color:white;
-padding:5px 9px;
-border-radius:20px;
-font-size:12px
+font-weight:bold
 }
 
 .wa{
 background:#19b957!important;
 color:white!important
-}
-
-.loading{
-text-align:center;
-padding:30px;
-font-size:18px
-}
-
-.empty{
-text-align:center;
-background:white;
-padding:30px;
-border-radius:15px
 }
 
 footer{
@@ -173,6 +134,70 @@ text-align:center;
 padding:25px
 }
 
+
+/* COURSE DETAILS POPUP */
+
+.modal{
+display:none;
+position:fixed;
+z-index:999;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:#0009;
+padding:20px;
+overflow:auto
+}
+
+.modal-box{
+background:white;
+max-width:650px;
+margin:50px auto;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 40px #0005;
+position:relative
+}
+
+.close{
+position:absolute;
+right:15px;
+top:10px;
+font-size:30px;
+cursor:pointer;
+color:#555
+}
+
+.modal-box h2{
+color:#6633ee;
+margin-top:5px
+}
+
+.detail-price{
+font-size:28px;
+font-weight:bold;
+color:#6633ee;
+margin:15px 0
+}
+
+.detail-list{
+background:#f5f2ff;
+padding:15px;
+border-radius:12px;
+margin:15px 0
+}
+
+.detail-list p{
+margin:8px 0
+}
+
+.buy{
+background:#19b957;
+color:white;
+width:100%;
+font-size:17px
+}
 </style>
 </head>
 
@@ -180,7 +205,7 @@ padding:25px
 <body>
 
 
-<!-- ================= NAV ================= -->
+<!-- NAVBAR -->
 
 <nav>
 
@@ -189,9 +214,7 @@ padding:25px
 <div>
 
 <a href="#courses">Courses</a>
-
 <a href="#about">About</a>
-
 <a href="#contact">Contact</a>
 
 </div>
@@ -199,7 +222,7 @@ padding:25px
 </nav>
 
 
-<!-- ================= HERO ================= -->
+<!-- HERO -->
 
 <div class="hero">
 
@@ -213,42 +236,31 @@ Practical digital courses सीखें और अपने career
 तथा online business को आगे बढ़ाएँ।
 </p>
 
-<a
-class="btn"
-href="#courses">
-
+<a class="btn" href="#courses">
 Courses देखें →
 </a>
 
 </div>
 
 
-<!-- ================= SPECIAL ================= -->
+<!-- ADMIN / STUDENT -->
 
 <div class="special">
 
 <h2>🎓 Student & Admin Area</h2>
 
-<a
-class="admin"
-href="admin.html">
-
+<a class="admin" href="admin.html">
 🔐 Admin Panel
-
 </a>
 
-<a
-class="lms"
-href="lms.html">
-
+<a class="lms" href="lms.html">
 🎓 Student LMS
-
 </a>
 
 </div>
 
 
-<!-- ================= COURSES ================= -->
+<!-- COURSES -->
 
 <section id="courses">
 
@@ -256,22 +268,100 @@ href="lms.html">
 🔥 Popular Courses
 </h2>
 
-<div
-id="courseList"
-class="cards">
 
-<div class="loading">
+<div class="cards">
 
-⏳ Courses loading...
+
+<!-- COURSE 1 -->
+
+<div class="card">
+
+<h3>
+💻 Web Development
+</h3>
+
+<p>
+HTML, CSS और JavaScript से modern
+websites बनाना सीखें।
+</p>
+
+<div class="price">
+₹499
+</div>
+
+<button
+class="btn"
+onclick="openCourse(
+'web'
+)">
+View Details
+</button>
 
 </div>
+
+
+<!-- COURSE 2 -->
+
+<div class="card">
+
+<h3>
+📱 Android App Development
+</h3>
+
+<p>
+अपना पहला Android application
+बनाना सीखें।
+</p>
+
+<div class="price">
+₹699
+</div>
+
+<button
+class="btn"
+onclick="openCourse(
+'android'
+)">
+View Details
+</button>
+
+</div>
+
+
+<!-- COURSE 3 -->
+
+<div class="card">
+
+<h3>
+📣 Digital Marketing
+</h3>
+
+<p>
+Social media और online marketing
+की practical skills सीखें।
+</p>
+
+<div class="price">
+₹399
+</div>
+
+<button
+class="btn"
+onclick="openCourse(
+'marketing'
+)">
+View Details
+</button>
+
+</div>
+
 
 </div>
 
 </section>
 
 
-<!-- ================= ABOUT ================= -->
+<!-- ABOUT -->
 
 <section
 id="about"
@@ -282,14 +372,14 @@ style="background:white;text-align:center">
 </h2>
 
 <p>
-DigiCourse का उद्देश्य practical digital skills
-को आसान भाषा में सिखाना है।
+DigiCourse का उद्देश्य practical digital
+skills को आसान भाषा में सिखाना है।
 </p>
 
 </section>
 
 
-<!-- ================= CONTACT ================= -->
+<!-- CONTACT -->
 
 <section
 id="contact"
@@ -305,7 +395,7 @@ Course खरीदने या जानकारी के लिए सं�
 
 <a
 class="btn wa"
-href="https://wa.me/919999999999"
+href="https://wa.me/91XXXXXXXXXX"
 target="_blank">
 
 💬 WhatsApp करें
@@ -315,6 +405,8 @@ target="_blank">
 </section>
 
 
+<!-- FOOTER -->
+
 <footer>
 
 © 2026 DigiCourse.
@@ -323,289 +415,256 @@ All Rights Reserved.
 </footer>
 
 
-<script>
 
-/* ==========================================
-   SUPABASE CONFIG
-========================================== */
+<!-- =========================
+COURSE DETAILS MODAL
+========================= -->
 
-const SUPABASE_URL =
-"https://qobwcoopjubdloduxgrz.supabase.co";
+<div
+id="courseModal"
+class="modal"
+onclick="closeOutside(event)">
 
-const SUPABASE_KEY =
-"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+<div class="modal-box">
 
-
-/* ==========================================
-   API
-========================================== */
-
-async function getCourses(){
-
-const response =
-await fetch(
-
-SUPABASE_URL +
-"/rest/v1/courses" +
-"?select=*" +
-"&order=created_at.desc",
-
-{
-
-headers:{
-
-apikey:SUPABASE_KEY,
-
-Authorization:
-"Bearer " + SUPABASE_KEY
-
-}
-
-}
-
-);
-
-
-if(!response.ok){
-
-throw new Error(
-"Courses load नहीं हो पाए"
-);
-
-}
-
-
-return await response.json();
-
-}
-
-
-/* ==========================================
-   LOAD COURSES
-========================================== */
-
-async function loadCourses(){
-
-const list =
-document.getElementById(
-"courseList"
-);
-
-try{
-
-const courses =
-await getCourses();
-
-
-if(
-!courses ||
-courses.length===0
-){
-
-list.innerHTML = `
-
-<div class="empty">
-
-<h3>
-📚 अभी कोई Course उपलब्ध नहीं है
-</h3>
-
-<p>
-Admin Panel से course add करें।
-</p>
-
-</div>
-
-`;
-
-return;
-
-}
-
-
-list.innerHTML =
-courses
-.map(courseCard)
-.join("");
-
-}
-
-catch(error){
-
-console.error(error);
-
-list.innerHTML = `
-
-<div class="empty">
-
-<h3>
-❌ Course load नहीं हो पाए
-</h3>
-
-<p>
-कृपया थोड़ी देर बाद फिर कोशिश करें।
-</p>
-
-</div>
-
-`;
-
-}
-
-}
-
-
-/* ==========================================
-   COURSE CARD
-========================================== */
-
-function courseCard(course){
-
-const original =
-Number(
-course.original_price || 0
-);
-
-const offer =
-Number(
-course.offer_price ??
-course.price ??
-0
-);
-
-
-return `
-
-<div class="card">
-
-<h3>
-📚 ${esc(course.title)}
-</h3>
-
-<p>
-${esc(
-course.description ||
-"Practical digital course"
-)}
-</p>
-
-
-${
-original > offer
-?
-
-`
-<div class="original">
-
-Original Price:
-₹${original}
-
-</div>
-`
-
-:
-
-""
-
-}
-
-
-<div class="price">
-
-🔥 ₹${offer}
-
-</div>
-
-
-${
-original > offer
-?
-
-`
-<span class="badge">
-
-SAVE ₹${original-offer}
-
+<span
+class="close"
+onclick="closeCourse()">
+×
 </span>
-`
-
-:
-
-""
-
-}
 
 
-<br>
+<h2 id="modalTitle">
+Course Details
+</h2>
+
+
+<p id="modalDescription">
+</p>
+
+
+<div
+id="modalPrice"
+class="detail-price">
+</div>
+
+
+<div class="detail-list">
+
+<h3>
+📚 इस Course में क्या मिलेगा?
+</h3>
+
+<p>
+✅ Practical Video Lessons
+</p>
+
+<p>
+✅ Step-by-Step Learning
+</p>
+
+<p>
+✅ Course Materials
+</p>
+
+<p>
+✅ PDF Notes
+</p>
+
+<p>
+✅ Lifetime Access
+</p>
+
+<p>
+✅ Beginner Friendly
+</p>
+
+</div>
 
 
 <button
-class="btn"
-onclick="viewDetails('${course.id}')">
+class="btn buy"
+onclick="buyCourse()">
 
-👁️ View Details
+🛒 Buy Course
 
 </button>
 
 
 </div>
 
-`;
+</div>
+
+
+
+<script>
+
+/* ==========================
+COURSE DATA
+========================== */
+
+const courses = {
+
+web:{
+title:"💻 Web Development",
+description:
+"HTML, CSS और JavaScript की मदद से modern और responsive websites बनाना सीखें।",
+price:"₹499"
+},
+
+android:{
+title:"📱 Android App Development",
+description:
+"Android application development की शुरुआत से practical तरीके से सीखें।",
+price:"₹699"
+},
+
+marketing:{
+title:"📣 Digital Marketing",
+description:
+"Social media, Facebook Ads और online marketing की practical skills सीखें।",
+price:"₹399"
+}
+
+};
+
+
+/* ==========================
+CURRENT COURSE
+========================== */
+
+let selectedCourse = null;
+
+
+/* ==========================
+OPEN COURSE
+========================== */
+
+function openCourse(id){
+
+const course =
+courses[id];
+
+if(!course){
+
+return;
+
+}
+
+selectedCourse =
+id;
+
+
+document
+.getElementById("modalTitle")
+.textContent =
+course.title;
+
+
+document
+.getElementById("modalDescription")
+.textContent =
+course.description;
+
+
+document
+.getElementById("modalPrice")
+.textContent =
+"🔥 Course Price: " +
+course.price;
+
+
+document
+.getElementById("courseModal")
+.style.display =
+"block";
+
+
+document.body.style.overflow =
+"hidden";
 
 }
 
 
-/* ==========================================
-   VIEW DETAILS
-========================================== */
+/* ==========================
+CLOSE COURSE
+========================== */
 
-function viewDetails(id){
+function closeCourse(){
+
+document
+.getElementById("courseModal")
+.style.display =
+"none";
+
+
+document.body.style.overflow =
+"auto";
+
+}
+
+
+/* ==========================
+OUTSIDE CLICK
+========================== */
+
+function closeOutside(event){
+
+if(
+event.target.id ===
+"courseModal"
+){
+
+closeCourse();
+
+}
+
+}
+
+
+/* ==========================
+BUY COURSE
+========================== */
+
+function buyCourse(){
+
+if(!selectedCourse){
+
+return;
+
+}
+
 
 /*
-Course ID को URL में भेज रहे हैं
+अभी Student LMS पर भेज रहे हैं।
+बाद में payment system जोड़ सकते हैं।
 */
 
 window.location.href =
-"course.html?id=" +
-encodeURIComponent(id);
+"lms.html";
 
 }
 
 
-/* ==========================================
-   SECURITY / HTML ESCAPE
-========================================== */
+/* ==========================
+ESC KEY
+========================== */
 
-function esc(value){
+document.addEventListener(
+"keydown",
+function(event){
 
-return String(
-value ?? ""
-)
-.replace(
-/[&<>"']/g,
+if(event.key === "Escape"){
 
-char => ({
+closeCourse();
 
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
+}
 
-}[char])
-
+}
 );
 
-}
-
-
-/* ==========================================
-   START
-========================================== */
-
-loadCourses();
-
 </script>
+
 
 </body>
 </html>
