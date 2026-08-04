@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DigiCourse - Web Development</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f7ff;
+color:#182033
+}
+
+nav{
+background:linear-gradient(90deg,#5b2cff,#8d4cff);
+color:white;
+padding:16px 6%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
+}
+
+nav b{font-size:22px}
+
+nav a{
+color:white;
+text-decoration:none;
+margin-left:15px;
+font-weight:bold
+}
+
+.hero{
+background:linear-gradient(135deg,#faf8ff,#eee8ff);
+padding:55px 6%;
+text-align:center
+}
+
+.hero h1{
+font-size:40px;
+margin:10px 0
+}
+
+.hero p{
+font-size:18px;
+color:#555;
+max-width:700px;
+margin:15px auto
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:30px 6%
+}
+
+.box{
+background:white;
+padding:25px;
+margin:20px 0;
+border-radius:18px;
+box-shadow:0 7px 25px #0001
+}
+
+.price-box{
+background:#f7f3ff;
+padding:20px;
+border-radius:15px;
+margin:20px 0
+}
+
+.old{
+text-decoration:line-through;
+color:#888;
+font-size:18px
+}
+
+.price{
+font-size:32px;
+font-weight:bold;
+color:#6633ee;
+margin:8px 0
+}
+
+.save{
+display:inline-block;
+background:#6633ee;
+color:white;
+padding:6px 10px;
+border-radius:20px;
+font-size:13px
+}
+
+.btn{
+display:inline-block;
+border:0;
+background:#6633ee;
+color:white;
+text-decoration:none;
+padding:14px 22px;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin:5px
+}
+
+.buy{
+background:#159447;
+font-size:18px
+}
+
+.back{
+background:#555
+}
+
+.lesson{
+background:#f8f6ff;
+padding:18px;
+margin:12px 0;
+border-radius:12px;
+border-left:5px solid #6633ee
+}
+
+.lesson h3{
+margin-top:0
+}
+
+.lesson a{
+color:#6633ee;
+font-weight:bold;
+text-decoration:none;
+margin-right:15px
+}
+
+.tick{
+color:#159447;
+font-weight:bold
+}
+
+.coupon{
+background:#eaf8ef;
+padding:15px;
+border-radius:12px;
+margin-top:15px
+}
+
+.loading{
+text-align:center;
+padding:30px;
+font-weight:bold
+}
+
+.error{
+background:#ffecec;
+color:#b00020;
+padding:15px;
+border-radius:10px
+}
+
+footer{
+background:#11101d;
+color:white;
+text-align:center;
+padding:25px;
+margin-top:30px
+}
+
+@media(max-width:600px){
+.hero h1{font-size:30px}
+nav{padding:15px}
+nav a{margin-left:8px;font-size:12px}
+.price{font-size:27px}
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+
+<b>🚀 DigiCourse</b>
+
+<div>
+<a href="index.html">Home</a>
+<a href="index.html#courses">Courses</a>
+<a href="lms.html">Student LMS</a>
+<a href="admin.html">Admin</a>
+</div>
+
+</nav>
+
+
+<section class="hero">
+
+<h1>💻 Web Development</h1>
+
+<p>
+HTML, CSS और JavaScript की मदद से modern और responsive websites बनाना सीखें।
+</p>
+
+</section>
+
+
+<main class="container">
+
+<!-- COURSE INFORMATION -->
+
+<div class="box">
+
+<h2>📚 इस Course में क्या मिलेगा?</h2>
+
+<p class="tick">✅ Practical Video Lessons</p>
+<p class="tick">✅ Step-by-Step Learning</p>
+<p class="tick">✅ Course Materials</p>
+<p class="tick">✅ PDF Notes</p>
+<p class="tick">✅ Lifetime Access</p>
+<p class="tick">✅ Beginner Friendly</p>
+
+
+<div class="price-box">
+
+<div class="old">
+Original Price: ₹999
+</div>
+
+<div class="price">
+🔥 Course Price: ₹499
+</div>
+
+<span class="save">
+SAVE ₹500
+</span>
+
+<br><br>
+
+<a
+class="btn buy"
+href="lms.html">
+🛒 Buy Course
+</a>
+
+<a
+class="btn back"
+href="index.html">
+⬅ Back to Home
+</a>
+
+</div>
+
+</div>
+
+
+<!-- COUPON -->
+
+<div class="box">
+
+<h2>🎟️ Special Offer</h2>
+
+<div class="coupon">
+
+<b>🎁 DIGI50</b>
+
+<br><br>
+
+इस coupon से आपको special discount मिल सकता है।
+
+<br><br>
+
+<button
+class="btn"
+onclick="applyCoupon()">
+🎟️ Apply Coupon
+</button>
+
+<p id="couponMsg"></p>
+
+</div>
+
+</div>
+
+
+<!-- LESSONS -->
+
+<div class="box">
+
+<h2>📖 Course Lessons</h2>
+
+<div id="lessons">
+
+<div class="loading">
+⏳ Lessons loading...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BUY -->
+
+<div class="box" style="text-align:center">
+
+<h2>🚀 Course शुरू करने के लिए तैयार?</h2>
+
+<p>
+आज ही course खरीदें और अपनी Web Development journey शुरू करें।
+</p>
+
+<a
+class="btn buy"
+href="lms.html">
+🛒 Buy Course Now
+</a>
+
+</div>
+
+</main>
+
+
+<footer>
+
+© 2026 DigiCourse. All Rights Reserved.
+
+</footer>
+
+
+<script>
+
+/* ===============================
+SUPABASE CONFIG
+================================ */
+
+const SUPABASE_URL =
+"https://qobwcoopjubdloduxgrz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+
+
+/* ===============================
+API
+================================ */
+
+async function api(path){
+
+const response =
+await fetch(
+SUPABASE_URL + path,
+{
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:
+"Bearer " + SUPABASE_KEY
+}
+}
+);
+
+if(!response.ok){
+
+throw new Error(
+"Course data load नहीं हुआ"
+);
+
+}
+
+return await response.json();
+
+}
+
+
+/* ===============================
+LOAD COURSE
+================================ */
+
+async function loadCourse(){
+
+const box =
+document.getElementById("lessons");
+
+try{
+
+/*
+पहला course दिखाएँ
+*/
+
+const courses =
+await api(
+"/rest/v1/courses?select=*&order=created_at.asc&limit=1"
+);
+
+
+if(!courses.length){
+
+box.innerHTML =
+`
+<div class="error">
+❌ अभी कोई Course उपलब्ध नहीं है।
+</div>
+`;
+
+return;
+
+}
+
+
+const course =
+courses[0];
+
+
+/* Course title */
+
+document.title =
+"DigiCourse - " +
+course.title;
+
+
+/* Hero title */
+
+document.querySelector(
+".hero h1"
+).textContent =
+"💻 " + course.title;
+
+
+/* Hero description */
+
+document.querySelector(
+".hero p"
+).textContent =
+course.description ||
+"Practical digital course सीखें।";
+
+
+/* Lessons */
+
+const lessons =
+await api(
+"/rest/v1/lessons?course_id=eq." +
+encodeURIComponent(course.id) +
+"&select=*&order=lesson_order.asc"
+);
+
+
+if(!lessons.length){
+
+box.innerHTML =
+`
+<div class="lesson">
+📖 अभी lessons उपलब्ध नहीं हैं।
+</div>
+`;
+
+return;
+
+}
+
+
+box.innerHTML =
+lessons.map(
+lesson => `
+
+<div class="lesson">
+
+<h3>
+📖 Lesson ${escapeHTML(
+lesson.lesson_order || ""
+)}
+:
+${escapeHTML(
+lesson.title
+)}
+</h3>
+
+<p>
+${escapeHTML(
+lesson.description || ""
+)}
+</p>
+
+${
+lesson.video_url
+?
+`
+🎥
+<a
+href="${safeURL(lesson.video_url)}"
+target="_blank"
+rel="noopener">
+▶ Watch Video
+</a>
+`
+:""
+}
+
+${
+lesson.pdf_url
+?
+`
+📄
+<a
+href="${safeURL(lesson.pdf_url)}"
+target="_blank"
+rel="noopener">
+📥 Open PDF
+</a>
+`
+:""
+}
+
+</div>
+
+`
+).join("");
+
+
+}
+catch(error){
+
+console.error(error);
+
+box.innerHTML =
+`
+<div class="error">
+❌ ${escapeHTML(error.message)}
+</div>
+`;
+
+}
+
+}
+
+
+/* ===============================
+COUPON
+================================ */
+
+function applyCoupon(){
+
+const msg =
+document.getElementById(
+"couponMsg"
+);
+
+msg.innerHTML =
+`
+<span style="color:#159447;font-weight:bold">
+✅ Coupon DIGI50 selected.
+</span>
+<br>
+अब Buy Course पर जाकर purchase करें।
+`;
+
+}
+
+
+/* ===============================
+SECURITY
+================================ */
+
+function escapeHTML(value){
+
+return String(value ?? "")
+.replace(
+/[&<>"']/g,
+function(char){
+
+return {
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[char];
+
+}
+);
+
+}
+
+
+function safeURL(value){
+
+const url =
+String(value || "").trim();
+
+if(
+!/^https?:\/\//i.test(url)
+){
+
+return "#";
+
+}
+
+return url;
+
+}
+
+
+/* ===============================
+START
+================================ */
+
+loadCourse();
+
+</script>
+
+</body>
+</html>
