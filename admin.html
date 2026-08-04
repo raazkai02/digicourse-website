@@ -7,30 +7,31 @@
 
 <style>
 body{
-font-family:Arial;
+font-family:Arial,sans-serif;
 background:#f5f7ff;
 margin:0;
 color:#182033
 }
 header{
-background:#6633ee;
+background:linear-gradient(135deg,#5b2cff,#8d4cff);
 color:white;
 padding:25px
 }
-main{
-padding:20px
-}
+main{padding:20px}
 .box,.course{
 background:white;
 padding:18px;
 margin:15px 0;
-border-radius:12px
+border-radius:12px;
+box-shadow:0 5px 18px #0001
 }
 input,textarea{
 width:100%;
 padding:12px;
 margin:6px 0;
-box-sizing:border-box
+box-sizing:border-box;
+border:1px solid #ccc;
+border-radius:8px
 }
 button{
 padding:11px 15px;
@@ -38,14 +39,12 @@ border:0;
 border-radius:8px;
 background:#6633ee;
 color:white;
-margin:5px
+margin:5px;
+cursor:pointer
 }
-.red{
-background:#e53935
-}
-.hide{
-display:none
-}
+button:disabled{opacity:.6}
+.red{background:#e53935}
+.hide{display:none!important}
 .lesson{
 background:#f0edff;
 padding:12px;
@@ -53,8 +52,11 @@ margin:8px 0;
 border-radius:8px
 }
 a{
-color:#6633ee
+color:#6633ee;
+font-weight:bold
 }
+.success{color:green;font-weight:bold}
+.error{color:#d00;font-weight:bold}
 </style>
 </head>
 
@@ -67,7 +69,7 @@ color:#6633ee
 
 <main>
 
-<!-- ADMIN LOGIN -->
+<!-- ================= LOGIN ================= -->
 
 <div id="login" class="box">
 
@@ -96,14 +98,14 @@ Login
 </div>
 
 
-<!-- FORGOT PASSWORD -->
+<!-- ================= FORGOT PASSWORD ================= -->
 
 <div id="forgot" class="box hide">
 
 <h2>🔑 Reset Admin Password</h2>
 
 <p>
-Admin email डालें। Reset link आपके Gmail पर आएगा।
+Admin email डालें। Reset link Gmail पर आएगा।
 </p>
 
 <input
@@ -111,7 +113,7 @@ id="forgotEmail"
 type="email"
 placeholder="Admin Email">
 
-<button onclick="sendReset()">
+<button id="resetBtn" onclick="sendReset()">
 Send Reset Link
 </button>
 
@@ -124,7 +126,7 @@ Back to Login
 </div>
 
 
-<!-- NEW PASSWORD -->
+<!-- ================= NEW PASSWORD ================= -->
 
 <div id="newPassword" class="box hide">
 
@@ -144,7 +146,7 @@ id="newPass2"
 type="password"
 placeholder="Confirm New Password">
 
-<button onclick="updatePassword()">
+<button id="updateBtn" onclick="updatePassword()">
 Update Password
 </button>
 
@@ -153,20 +155,16 @@ Update Password
 </div>
 
 
-<!-- ADMIN DASHBOARD -->
+<!-- ================= ADMIN PANEL ================= -->
 
 <div id="panel" class="hide">
 
 <h2>📚 Admin Dashboard</h2>
 
-<button
-class="red"
-onclick="logout()">
+<button class="red" onclick="logout()">
 Logout
 </button>
 
-
-<!-- ADD COURSE -->
 
 <div class="box">
 
@@ -178,8 +176,7 @@ placeholder="Course Title">
 
 <textarea
 id="cd"
-placeholder="Course Description">
-</textarea>
+placeholder="Course Description"></textarea>
 
 <input
 id="cp"
@@ -201,6 +198,10 @@ Add Course
 
 <script>
 
+/* =================================================
+   SUPABASE CONFIG
+================================================= */
+
 const U =
 "https://qobwcoopjubdloduxgrz.supabase.co";
 
@@ -212,7 +213,9 @@ let T =
 localStorage.getItem("admin_token") || "";
 
 
-/* API */
+/* =================================================
+   API
+================================================= */
 
 async function api(path,opt={}){
 
@@ -226,31 +229,38 @@ headers:{
 apikey:K,
 
 Authorization:
-"Bearer "+(T||K),
+"Bearer "+(T || K),
 
 "Content-Type":
 "application/json",
 
-...(opt.headers||{})
+...(opt.headers || {})
 
 }
 
 });
 
-
-let x =
+let text =
 await r.text();
 
-let d =
-x ? JSON.parse(x) : null;
+let d=null;
+
+try{
+d=text ? JSON.parse(text) : null;
+}
+catch{
+d={message:text};
+}
 
 if(!r.ok){
 
 throw Error(
 d?.msg ||
 d?.message ||
+d?.error_description ||
 d?.hint ||
-x
+text ||
+"Supabase error"
 );
 
 }
@@ -260,7 +270,9 @@ return d;
 }
 
 
-/* ADMIN LOGIN */
+/* =================================================
+   ADMIN LOGIN
+================================================= */
 
 async function loginAdmin(){
 
@@ -275,20 +287,19 @@ document.getElementById("pass")
 let msg =
 document.getElementById("msg");
 
+msg.className="";
 
 if(!e || !p){
 
 msg.textContent =
 "❌ Email और Password डालें";
 
-return;
+msg.className="error";
 
+return;
 }
 
-
-msg.textContent =
-"Login...";
-
+msg.textContent="Login...";
 
 try{
 
@@ -296,24 +307,19 @@ let d =
 await api(
 "/auth/v1/token?grant_type=password",
 {
-
 method:"POST",
 
-body:
-JSON.stringify({
-
+body:JSON.stringify({
 email:e,
-
 password:p
-
 })
+}
+);
 
-});
+T=d.access_token;
 
 
-T =
-d.access_token;
-
+/* Check admin */
 
 let a =
 await api(
@@ -323,7 +329,6 @@ encodeURIComponent(d.user.id)
 +
 "&select=id,name"
 );
-
 
 if(!a.length){
 
@@ -344,11 +349,9 @@ localStorage.setItem(
 d.user.id
 );
 
-
 showPanel();
 
 load();
-
 
 }
 catch(x){
@@ -356,12 +359,16 @@ catch(x){
 msg.textContent =
 "❌ "+x.message;
 
-}
+msg.className="error";
 
 }
 
+}
 
-/* FORGOT PASSWORD */
+
+/* =================================================
+   FORGOT PASSWORD SCREEN
+================================================= */
 
 function showForgot(){
 
@@ -377,30 +384,30 @@ document
 .getElementById("forgot")
 .classList.remove("hide");
 
-
 document
 .getElementById("forgotMsg")
 .textContent="";
 
 
-let old =
+let oldEmail =
 document
 .getElementById("email")
 .value.trim();
 
-
-if(old){
+if(oldEmail){
 
 document
 .getElementById("forgotEmail")
-.value=old;
+.value=oldEmail;
 
 }
 
 }
 
 
-/* BACK TO LOGIN */
+/* =================================================
+   BACK LOGIN
+================================================= */
 
 function backLogin(){
 
@@ -419,7 +426,9 @@ document
 }
 
 
-/* SEND RESET EMAIL */
+/* =================================================
+   SEND RESET EMAIL
+================================================= */
 
 async function sendReset(){
 
@@ -428,55 +437,57 @@ document
 .getElementById("forgotEmail")
 .value.trim();
 
-
 let m =
 document
 .getElementById("forgotMsg");
 
+let btn =
+document
+.getElementById("resetBtn");
 
 if(!e){
 
 m.textContent =
 "❌ Admin Email डालें";
 
-return;
+m.className="error";
 
+return;
 }
 
+btn.disabled=true;
 
 m.textContent =
-"Sending...";
+"⏳ Reset email भेज रहे हैं...";
+
+m.className="";
 
 
 try{
 
 /*
-Admin page का live URL
+IMPORTANT:
+Current admin.html URL को redirect URL बनाया गया है.
 */
 
 let redirect =
-location.origin +
-location.pathname;
+window.location.origin +
+window.location.pathname;
 
 
 let r =
 await fetch(
 U+"/auth/v1/recover",
 {
-
 method:"POST",
 
 headers:{
-
 apikey:K,
-
 "Content-Type":
 "application/json"
-
 },
 
-body:
-JSON.stringify({
+body:JSON.stringify({
 
 email:e,
 
@@ -484,15 +495,21 @@ redirect_to:redirect
 
 })
 
-});
+}
+);
 
 
 let text =
 await r.text();
 
+let d=null;
 
-let d =
-text ? JSON.parse(text) : null;
+try{
+d=text ? JSON.parse(text) : null;
+}
+catch{
+d={message:text};
+}
 
 
 if(!r.ok){
@@ -500,6 +517,7 @@ if(!r.ok){
 throw Error(
 d?.msg ||
 d?.message ||
+d?.error_description ||
 text
 );
 
@@ -509,6 +527,7 @@ text
 m.textContent =
 "✅ Reset link भेज दिया गया। Gmail में नया email खोलें।";
 
+m.className="success";
 
 }
 catch(x){
@@ -516,72 +535,167 @@ catch(x){
 m.textContent =
 "❌ "+x.message;
 
-}
+m.className="error";
 
 }
 
+btn.disabled=false;
 
-/* CHECK PASSWORD RECOVERY LINK */
+}
+
+
+/* =================================================
+   HANDLE SUPABASE RECOVERY LINK
+================================================= */
 
 function checkRecoveryLink(){
 
-let hash =
-location.hash.substring(1);
+/*
+Supabase पुराने/implicit recovery flow में
+tokens URL hash (#...) में भेज सकता है.
+*/
 
+let hash =
+window.location.hash.substring(1);
 
 if(!hash){
-
-return;
-
+return false;
 }
-
 
 let params =
 new URLSearchParams(hash);
 
-
 let type =
 params.get("type");
 
-
-let access =
+let accessToken =
 params.get("access_token");
 
+let refreshToken =
+params.get("refresh_token");
 
-if(
-type==="recovery"
-&&
-access
-){
+let error =
+params.get("error");
 
-T=access;
+let errorCode =
+params.get("error_code");
 
+
+/* Expired/invalid link */
+
+if(error || errorCode){
 
 document
 .getElementById("login")
 .classList.add("hide");
 
-
 document
 .getElementById("forgot")
 .classList.add("hide");
-
 
 document
 .getElementById("newPassword")
 .classList.remove("hide");
 
+document
+.getElementById("newMsg")
+.textContent =
+"❌ Reset link invalid या expired है। नया reset link भेजें।";
 
 document
 .getElementById("newMsg")
-.textContent="";
+.className="error";
+
+return true;
 
 }
 
+
+/* Recovery token */
+
+if(
+type==="recovery" &&
+accessToken
+){
+
+T=accessToken;
+
+
+/*
+Save recovery token temporarily.
+*/
+
+localStorage.setItem(
+"admin_recovery_token",
+T
+);
+
+
+/*
+If refresh token exists, save it too.
+*/
+
+if(refreshToken){
+
+localStorage.setItem(
+"admin_recovery_refresh",
+refreshToken
+);
 }
 
 
-/* UPDATE PASSWORD */
+/*
+Show password screen.
+*/
+
+document
+.getElementById("login")
+.classList.add("hide");
+
+document
+.getElementById("forgot")
+.classList.add("hide");
+
+document
+.getElementById("panel")
+.classList.add("hide");
+
+document
+.getElementById("newPassword")
+.classList.remove("hide");
+
+document
+.getElementById("newMsg")
+.textContent =
+"अब अपना नया password डालें।";
+
+document
+.getElementById("newMsg")
+.className="success";
+
+
+/*
+Remove token from visible URL after reading it.
+*/
+
+history.replaceState(
+null,
+"",
+window.location.pathname
+);
+
+return true;
+
+}
+
+return false;
+
+}
+
+
+/* =================================================
+   UPDATE PASSWORD
+================================================= */
 
 async function updatePassword(){
 
@@ -590,16 +704,18 @@ document
 .getElementById("newPass")
 .value;
 
-
 let p2 =
 document
 .getElementById("newPass2")
 .value;
 
-
 let m =
 document
 .getElementById("newMsg");
+
+let btn =
+document
+.getElementById("updateBtn");
 
 
 if(!p1 || !p2){
@@ -607,33 +723,66 @@ if(!p1 || !p2){
 m.textContent =
 "❌ दोनों password डालें";
 
-return;
+m.className="error";
 
+return;
 }
 
 
-if(p1.length<6){
+if(p1.length < 6){
 
 m.textContent =
 "❌ Password कम से कम 6 characters का रखें";
 
-return;
+m.className="error";
 
+return;
 }
 
 
-if(p1!==p2){
+if(p1 !== p2){
 
 m.textContent =
 "❌ दोनों password समान नहीं हैं";
 
-return;
+m.className="error";
 
+return;
 }
 
 
+/*
+Recovery token first.
+*/
+
+let recoveryToken =
+localStorage.getItem(
+"admin_recovery_token"
+);
+
+if(recoveryToken){
+
+T=recoveryToken;
+}
+
+
+if(!T){
+
 m.textContent =
-"Updating...";
+"❌ Recovery session नहीं मिला। नया reset link भेजें।";
+
+m.className="error";
+
+return;
+}
+
+
+btn.disabled=true;
+
+m.textContent =
+"⏳ Password update हो रहा है...";
+
+m.className="";
 
 
 try{
@@ -642,11 +791,9 @@ let r =
 await fetch(
 U+"/auth/v1/user",
 {
-
 method:"PUT",
 
 headers:{
-
 apikey:K,
 
 Authorization:
@@ -654,25 +801,28 @@ Authorization:
 
 "Content-Type":
 "application/json"
-
 },
 
-body:
-JSON.stringify({
+body:JSON.stringify({
 
 password:p1
 
 })
-
-});
+}
+);
 
 
 let text =
 await r.text();
 
+let d=null;
 
-let d =
-text ? JSON.parse(text) : null;
+try{
+d=text ? JSON.parse(text) : null;
+}
+catch{
+d={message:text};
+}
 
 
 if(!r.ok){
@@ -680,34 +830,66 @@ if(!r.ok){
 throw Error(
 d?.msg ||
 d?.message ||
+d?.error_description ||
 text
 );
 
 }
 
 
+/*
+Success
+*/
+
 m.textContent =
-"✅ Password successfully update हो गया।";
+"✅ Password successfully update हो गया!";
+
+m.className="success";
 
 
-setTimeout(()=>{
+localStorage.removeItem(
+"admin_recovery_token"
+);
 
-history.replaceState(
-null,
-"",
-location.pathname
+localStorage.removeItem(
+"admin_recovery_refresh"
 );
 
 
-backLogin();
+/*
+Go back to login after 2 seconds.
+*/
 
+setTimeout(()=>{
+
+T="";
 
 document
-.getElementById("email")
-.focus();
+.getElementById("newPass")
+.value="";
 
+document
+.getElementById("newPass2")
+.value="";
 
-},1200);
+document
+.getElementById("newPassword")
+.classList.add("hide");
+
+document
+.getElementById("login")
+.classList.remove("hide");
+
+document
+.getElementById("msg")
+.textContent =
+"✅ Password बदल गया। अब नए password से Login करें.";
+
+document
+.getElementById("msg")
+.className="success";
+
+},2000);
 
 
 }
@@ -716,12 +898,18 @@ catch(x){
 m.textContent =
 "❌ "+x.message;
 
-}
+m.className="error";
 
 }
 
+btn.disabled=false;
 
-/* SHOW ADMIN PANEL */
+}
+
+
+/* =================================================
+   SHOW ADMIN PANEL
+================================================= */
 
 function showPanel(){
 
@@ -729,16 +917,13 @@ document
 .getElementById("login")
 .classList.add("hide");
 
-
 document
 .getElementById("forgot")
 .classList.add("hide");
 
-
 document
 .getElementById("newPassword")
 .classList.add("hide");
-
 
 document
 .getElementById("panel")
@@ -747,16 +932,15 @@ document
 }
 
 
-/* RESTORE SESSION */
+/* =================================================
+   RESTORE ADMIN SESSION
+================================================= */
 
 async function restoreSession(){
 
 if(!T){
-
 return;
-
 }
-
 
 try{
 
@@ -764,7 +948,6 @@ let d =
 await api(
 "/auth/v1/user"
 );
-
 
 let a =
 await api(
@@ -802,7 +985,9 @@ localStorage.removeItem(
 }
 
 
-/* LOAD COURSES */
+/* =================================================
+   LOAD COURSES
+================================================= */
 
 async function load(){
 
@@ -812,7 +997,6 @@ let a =
 await api(
 "/rest/v1/courses?select=id,title,description,price&order=created_at"
 );
-
 
 document
 .getElementById("courses")
@@ -838,18 +1022,13 @@ ${esc(c.description||"")}
 
 <button
 onclick="show('${c.id}')">
-
 ➕ Add Lesson
-
 </button>
-
 
 <button
 class="red"
 onclick="del('${c.id}')">
-
 🗑️ Delete
-
 </button>
 
 
@@ -861,38 +1040,29 @@ class="hide">
 id="t${c.id}"
 placeholder="Lesson Title">
 
-
 <textarea
 id="d${c.id}"
 placeholder="Description">
 </textarea>
 
-
 <input
 id="v${c.id}"
 placeholder="Video URL">
-
 
 <input
 id="p${c.id}"
 placeholder="PDF URL">
 
-
 <button
 onclick="lesson('${c.id}')">
-
 💾 Save Lesson
-
 </button>
 
 </div>
 
 
-<div
-id="l${c.id}">
-
+<div id="l${c.id}">
 Loading lessons...
-
 </div>
 
 </div>
@@ -903,7 +1073,6 @@ Loading lessons...
 a.forEach(
 c=>lessons(c.id)
 );
-
 
 }
 catch(x){
@@ -918,7 +1087,9 @@ document
 }
 
 
-/* ADD COURSE */
+/* =================================================
+   ADD COURSE
+================================================= */
 
 async function addCourse(){
 
@@ -927,15 +1098,13 @@ try{
 await api(
 "/rest/v1/courses",
 {
-
 method:"POST",
 
 headers:{
 Prefer:"return=minimal"
 },
 
-body:
-JSON.stringify({
+body:JSON.stringify({
 
 title:
 document
@@ -955,7 +1124,6 @@ document
 )||0
 
 })
-
 }
 );
 
@@ -964,19 +1132,15 @@ document
 .getElementById("ct")
 .value="";
 
-
 document
 .getElementById("cd")
 .value="";
-
 
 document
 .getElementById("cp")
 .value="";
 
-
 load();
-
 
 }
 catch(x){
@@ -988,7 +1152,9 @@ alert(x.message);
 }
 
 
-/* SHOW LESSON FORM */
+/* =================================================
+   SHOW LESSON FORM
+================================================= */
 
 function show(id){
 
@@ -999,7 +1165,9 @@ document
 }
 
 
-/* ADD LESSON */
+/* =================================================
+   ADD LESSON
+================================================= */
 
 async function lesson(id){
 
@@ -1008,15 +1176,13 @@ try{
 await api(
 "/rest/v1/lessons",
 {
-
 method:"POST",
 
 headers:{
 Prefer:"return=minimal"
 },
 
-body:
-JSON.stringify({
+body:JSON.stringify({
 
 course_id:id,
 
@@ -1033,17 +1199,16 @@ document
 video_url:
 document
 .getElementById("v"+id)
-.value||null,
+.value || null,
 
 pdf_url:
 document
 .getElementById("p"+id)
-.value||null,
+.value || null,
 
 lesson_order:1
 
 })
-
 }
 );
 
@@ -1052,9 +1217,7 @@ alert(
 "✅ Lesson add हो गया"
 );
 
-
 lessons(id);
-
 
 }
 catch(x){
@@ -1066,7 +1229,9 @@ alert(x.message);
 }
 
 
-/* LOAD LESSONS */
+/* =================================================
+   LOAD LESSONS
+================================================= */
 
 async function lessons(id){
 
@@ -1098,7 +1263,6 @@ a.map(x=>`
 ${esc(x.description||"")}
 </p>
 
-
 ${
 x.video_url
 ?
@@ -1106,7 +1270,6 @@ x.video_url
 :
 ""
 }
-
 
 ${
 x.pdf_url
@@ -1122,7 +1285,6 @@ x.pdf_url
 ||
 "कोई lesson नहीं";
 
-
 }
 catch(x){
 
@@ -1136,20 +1298,15 @@ document
 }
 
 
-/* DELETE COURSE */
+/* =================================================
+   DELETE COURSE
+================================================= */
 
 async function del(id){
 
-if(
-!confirm(
-"Course delete करें?"
-)
-){
-
+if(!confirm("Course delete करें?")){
 return;
-
 }
-
 
 try{
 
@@ -1162,9 +1319,7 @@ method:"DELETE"
 }
 );
 
-
 load();
-
 
 }
 catch(x){
@@ -1176,7 +1331,9 @@ alert(x.message);
 }
 
 
-/* LOGOUT */
+/* =================================================
+   LOGOUT
+================================================= */
 
 function logout(){
 
@@ -1190,12 +1347,22 @@ localStorage.removeItem(
 "admin_user_id"
 );
 
+localStorage.removeItem(
+"admin_recovery_token"
+);
+
+localStorage.removeItem(
+"admin_recovery_refresh"
+);
+
 location.reload();
 
 }
 
 
-/* ESCAPE HTML */
+/* =================================================
+   ESCAPE HTML
+================================================= */
 
 function esc(s){
 
@@ -1218,11 +1385,33 @@ m=>({
 }
 
 
-/* START */
+/* =================================================
+   START
+================================================= */
 
+(function(){
+
+/*
+First check whether this is a password
+recovery link.
+*/
+
+let recovery =
 checkRecoveryLink();
 
+
+/*
+Only restore normal admin session if this
+is NOT a recovery link.
+*/
+
+if(!recovery){
+
 restoreSession();
+
+}
+
+})();
 
 </script>
 
