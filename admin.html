@@ -2,13 +2,15 @@
 
 <h3>➕ Add Course</h3>
 
-<input id="ct" placeholder="Course Title">
+<input
+id="ct"
+placeholder="Course Title">
 
 <textarea
 id="cd"
 placeholder="Course Description"></textarea>
 
-<h4>💰 Pricing</h4>
+<h3>💰 Course Pricing</h3>
 
 <input
 id="op"
@@ -20,36 +22,43 @@ id="cp"
 type="number"
 placeholder="Offer Price ₹">
 
-<h4>🎟️ Coupon</h4>
+<h3>🎟️ Coupon / Discount</h3>
 
 <input
 id="cc"
-placeholder="Coupon Code (Example: DIGI50)">
+placeholder="Coupon Code जैसे DIGI50">
 
 <input
 id="cv"
 type="number"
+min="0"
+max="100"
 placeholder="Discount %">
+
+<label>
+Coupon Expiry:
+</label>
 
 <input
 id="ce"
-type="datetime-local"
-placeholder="Coupon Expiry">
+type="datetime-local">
 
 <input
 id="cl"
 type="number"
-placeholder="Usage Limit">
+min="0"
+placeholder="Coupon Usage Limit">
 
-<label>
+<label style="display:block;margin:10px 0">
+
 <input
 id="ca"
 type="checkbox"
 style="width:auto">
- Coupon Active
-</label>
 
-<br><br>
+ Coupon Active
+
+</label>
 
 <button onclick="addCourse()">
 🚀 Add Course
