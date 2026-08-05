@@ -1,86 +1,690 @@
-async function loginStudent(){
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DigiCourse LMS</title>
 
-  const name = nameInput.value.trim();
-  const email = emailInput.value.trim().toLowerCase();
-  const password = passwordInput.value;
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:#f5f7ff;color:#182033
+}
+.hero{
+ padding:30px 6%;color:white;
+ background:linear-gradient(135deg,#5b2cff,#8d4cff)
+}
+.wrap{padding:25px 6%}
+.box,.card{
+ background:white;padding:20px;border-radius:16px;
+ box-shadow:0 6px 22px #0001;margin:15px 0
+}
+.box{max-width:450px;margin:25px auto}
+input{
+ width:100%;padding:13px;margin:7px 0;
+ border:1px solid #ccc;border-radius:8px;font-size:16px
+}
+.btn{
+ width:100%;padding:13px;margin-top:8px;
+ background:#6633ee;color:white;border:0;
+ border-radius:9px;font-size:16px;cursor:pointer
+}
+.logout{background:#e53935;width:auto;padding:10px 18px}
+.hidden{display:none!important}
+.msg{margin-top:12px;font-weight:bold}
+.error{color:#d00}
+.success{color:green}
+.topbar{
+ display:flex;justify-content:space-between;
+ align-items:center;gap:15px;flex-wrap:wrap
+}
+.cards{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+ gap:18px
+}
+.lesson{
+ margin-top:12px;padding:15px;
+ background:#f1efff;border-radius:10px
+}
+.price{font-size:20px;font-weight:bold;color:#6633ee}
+a{color:#6633ee;font-weight:bold;text-decoration:none;margin-right:12px}
+</style>
+</head>
 
-  msg.textContent = "";
-  msg.className = "msg";
+<body>
 
-  if(!email){
-    msg.textContent = "❌ Email डालें";
-    msg.classList.add("error");
-    return;
-  }
+<section class="hero">
+<h1>🎓 DigiCourse LMS</h1>
+<p>Student Learning Portal</p>
+</section>
 
-  if(!password || password.length < 6){
-    msg.textContent = "❌ Password कम से कम 6 characters का होना चाहिए";
-    msg.classList.add("error");
-    return;
-  }
+<main class="wrap">
 
-  loginBtn.disabled = true;
-  loginBtn.textContent = "⏳ Login हो रहा है...";
+<!-- LOGIN -->
+<div id="login" class="box">
 
-  try{
+<h2>👨‍🎓 Student Login</h2>
 
-    const loginData = await supabaseRequest(
-      "/auth/v1/token?grant_type=password",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      }
-    );
+<input id="name" type="text" placeholder="Student Name">
 
-    if(!loginData.access_token){
-      throw new Error("Login token नहीं मिला");
-    }
+<input id="email" type="email" placeholder="Email">
 
-    localStorage.setItem(
-      "dc_access_token",
-      loginData.access_token
-    );
+<input id="password" type="password" placeholder="Password">
 
-    localStorage.setItem(
-      "dc_user",
-      JSON.stringify(loginData.user || {})
-    );
+<button class="btn" id="loginBtn" onclick="loginStudent()">
+🔐 Login
+</button>
 
-    const studentName =
-      name ||
-      loginData.user?.user_metadata?.name ||
-      loginData.user?.email?.split("@")[0] ||
-      "Student";
+<p id="msg" class="msg"></p>
 
-    loginBox.classList.add("hidden");
+</div>
 
-    dashboard.classList.remove("hidden");
 
-    welcome.textContent = studentName;
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
 
-    msg.textContent = "";
+<div class="topbar">
 
-    await loadCourses();
+<div>
+<h2>Welcome, <span id="welcome"></span> 👋</h2>
+<p>🎓 My Purchased Courses</p>
+</div>
 
-  }catch(error){
+<button class="btn logout" onclick="logoutStudent()">
+Logout
+</button>
 
-    console.error("LOGIN ERROR:", error);
+</div>
 
-    msg.textContent =
-      "❌ Login failed: " +
-      (error.message || "Unknown error");
+<h2>📚 My Courses</h2>
 
-    msg.classList.add("error");
+<div id="courses">
+⏳ Courses loading...
+</div>
 
-  }finally{
+</div>
 
-    loginBtn.disabled = false;
+</main>
 
-    loginBtn.textContent = "🔐 Login";
 
-  }
+<script>
+
+/* =========================
+SUPABASE
+========================= */
+
+const SUPABASE_URL =
+"https://qobwcoopjubdloduxgrz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
+
+
+/* =========================
+ELEMENTS
+========================= */
+
+const loginBox =
+document.getElementById("login");
+
+const dashboard =
+document.getElementById("dashboard");
+
+const nameInput =
+document.getElementById("name");
+
+const emailInput =
+document.getElementById("email");
+
+const passwordInput =
+document.getElementById("password");
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+const msg =
+document.getElementById("msg");
+
+const welcome =
+document.getElementById("welcome");
+
+const courses =
+document.getElementById("courses");
+
+
+/* =========================
+SUPABASE REQUEST
+========================= */
+
+async function supabaseRequest(endpoint,options={}){
+
+const response = await fetch(
+SUPABASE_URL + endpoint,
+{
+...options,
+headers:{
+"apikey":SUPABASE_KEY,
+"Authorization":
+"Bearer " + SUPABASE_KEY,
+"Content-Type":"application/json",
+...(options.headers || {})
+}
+}
+);
+
+const text = await response.text();
+
+let data=null;
+
+try{
+data=text ? JSON.parse(text) : null;
+}catch{
+data=text;
+}
+
+if(!response.ok){
+
+throw new Error(
+data?.msg ||
+data?.message ||
+data?.error_description ||
+data?.error ||
+text ||
+"Supabase error"
+);
 
 }
+
+return data;
+
+}
+
+
+/* =========================
+LOGIN
+========================= */
+
+async function loginStudent(){
+
+const name =
+nameInput.value.trim();
+
+const email =
+emailInput.value.trim().toLowerCase();
+
+const password =
+passwordInput.value;
+
+msg.textContent="";
+msg.className="msg";
+
+if(!email){
+
+msg.textContent="❌ Email डालें";
+msg.classList.add("error");
+return;
+
+}
+
+if(!password || password.length<6){
+
+msg.textContent=
+"❌ Password कम से कम 6 characters का होना चाहिए";
+
+msg.classList.add("error");
+return;
+
+}
+
+loginBtn.disabled=true;
+loginBtn.textContent="⏳ Login हो रहा है...";
+
+try{
+
+const loginData =
+await supabaseRequest(
+"/auth/v1/token?grant_type=password",
+{
+method:"POST",
+
+body:JSON.stringify({
+email:email,
+password:password
+})
+
+}
+);
+
+
+if(!loginData.access_token){
+
+throw new Error(
+"Login token नहीं मिला"
+);
+
+}
+
+
+/* SAVE SESSION */
+
+localStorage.setItem(
+"dc_access_token",
+loginData.access_token
+);
+
+localStorage.setItem(
+"dc_user",
+JSON.stringify(
+loginData.user || {}
+)
+);
+
+
+/* NAME */
+
+const studentName =
+name ||
+loginData.user?.user_metadata?.name ||
+loginData.user?.email?.split("@")[0] ||
+"Student";
+
+
+/* DASHBOARD */
+
+loginBox.classList.add("hidden");
+
+dashboard.classList.remove("hidden");
+
+welcome.textContent=studentName;
+
+msg.textContent="";
+
+
+/* PURCHASED COURSES */
+
+await loadCourses();
+
+}
+catch(error){
+
+console.error(
+"LOGIN ERROR:",
+error
+);
+
+msg.textContent=
+"❌ Login failed: " +
+(error.message || "Unknown error");
+
+msg.classList.add("error");
+
+}
+finally{
+
+loginBtn.disabled=false;
+
+loginBtn.textContent=
+"🔐 Login";
+
+}
+
+}
+
+
+/* =========================
+LOAD PURCHASED COURSES
+========================= */
+
+async function loadCourses(){
+
+courses.innerHTML=
+"⏳ आपके purchased courses loading...";
+
+try{
+
+const token =
+localStorage.getItem(
+"dc_access_token"
+);
+
+const user =
+JSON.parse(
+localStorage.getItem(
+"dc_user"
+) || "{}"
+);
+
+if(!token || !user.id){
+
+throw new Error(
+"Student session नहीं मिली"
+);
+
+}
+
+
+/* ENROLLMENTS */
+
+const enrollments =
+await supabaseRequest(
+"/rest/v1/student_courses" +
+"?student_id=eq." +
+encodeURIComponent(user.id) +
+"&select=course_id"
+);
+
+
+if(
+!enrollments ||
+enrollments.length===0
+){
+
+courses.innerHTML=`
+
+<div class="card">
+
+<h3>📚 अभी कोई Course नहीं है</h3>
+
+<p>
+आपने अभी कोई course purchase नहीं किया है।
+</p>
+
+<a
+href="index.html"
+class="btn"
+style="display:inline-block;width:auto;color:white">
+🛒 Course खरीदें
+</a>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+const ids =
+enrollments
+.map(x=>x.course_id)
+.filter(Boolean);
+
+
+if(ids.length===0){
+
+courses.innerHTML=
+"<div class='card'>📚 कोई course नहीं मिला।</div>";
+
+return;
+
+}
+
+
+/* COURSES */
+
+const courseData =
+await supabaseRequest(
+"/rest/v1/courses" +
+"?id=in.(" +
+ids.map(
+x=>encodeURIComponent(x)
+).join(",") +
+")" +
+"&select=id,title,description,price,original_price,offer_price"
+);
+
+
+if(
+!courseData ||
+courseData.length===0
+){
+
+courses.innerHTML=
+"<div class='card'>📚 आपका purchased course अभी उपलब्ध नहीं है।</div>";
+
+return;
+
+}
+
+
+courses.innerHTML =
+courseData.map(course=>`
+
+<div class="card">
+
+<h3>
+📚 ${escapeHTML(course.title)}
+</h3>
+
+<p>
+${escapeHTML(course.description || "")}
+</p>
+
+<div class="price">
+₹${course.offer_price ??
+course.price ?? 0}
+</div>
+
+<button
+class="btn"
+onclick="showLessons('${course.id}',this)">
+📖 Open My Course
+</button>
+
+<div class="lessonBox"></div>
+
+</div>
+
+`).join("");
+
+}
+catch(error){
+
+console.error(error);
+
+courses.innerHTML=`
+
+<div class="card">
+
+❌ Courses load नहीं हो पाए।
+
+<br><br>
+
+${escapeHTML(error.message)}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================
+LESSONS
+========================= */
+
+async function showLessons(courseId,button){
+
+const box =
+button.parentElement
+.querySelector(".lessonBox");
+
+box.innerHTML=
+"⏳ Lessons loading...";
+
+try{
+
+const data =
+await supabaseRequest(
+"/rest/v1/lessons" +
+"?course_id=eq." +
+encodeURIComponent(courseId) +
+"&select=title,description,video_url,pdf_url,lesson_order" +
+"&order=lesson_order.asc"
+);
+
+
+if(!data || data.length===0){
+
+box.innerHTML=
+"<div class='lesson'>📖 अभी कोई lesson उपलब्ध नहीं है।</div>";
+
+return;
+
+}
+
+
+box.innerHTML =
+data.map(lesson=>`
+
+<div class="lesson">
+
+<b>
+📖 Lesson ${lesson.lesson_order || ""}
+:
+${escapeHTML(lesson.title)}
+</b>
+
+<p>
+${escapeHTML(lesson.description || "")}
+</p>
+
+${
+lesson.video_url
+?
+`<a href="${escapeAttribute(lesson.video_url)}"
+target="_blank" rel="noopener">
+🎥 Video
+</a>`
+:""
+}
+
+${
+lesson.pdf_url
+?
+`<a href="${escapeAttribute(lesson.pdf_url)}"
+target="_blank" rel="noopener">
+📄 PDF
+</a>`
+:""
+}
+
+</div>
+
+`).join("");
+
+}
+catch(error){
+
+box.innerHTML=
+"❌ Lesson error: " +
+escapeHTML(error.message);
+
+}
+
+}
+
+
+/* =========================
+LOGOUT
+========================= */
+
+function logoutStudent(){
+
+localStorage.removeItem(
+"dc_access_token"
+);
+
+localStorage.removeItem(
+"dc_user"
+);
+
+dashboard.classList.add("hidden");
+
+loginBox.classList.remove("hidden");
+
+nameInput.value="";
+emailInput.value="";
+passwordInput.value="";
+
+}
+
+
+/* =========================
+SECURITY
+========================= */
+
+function escapeHTML(value){
+
+return String(value ?? "")
+.replace(
+/[&<>"']/g,
+char=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[char])
+);
+
+}
+
+function escapeAttribute(value){
+
+return String(value ?? "")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;");
+
+}
+
+
+/* =========================
+AUTO LOGIN
+========================= */
+
+window.addEventListener(
+"DOMContentLoaded",
+function(){
+
+const token =
+localStorage.getItem(
+"dc_access_token"
+);
+
+const user =
+JSON.parse(
+localStorage.getItem(
+"dc_user"
+) || "{}"
+);
+
+if(token && user.id){
+
+loginBox.classList.add("hidden");
+
+dashboard.classList.remove("hidden");
+
+welcome.textContent =
+user.user_metadata?.name ||
+user.email?.split("@")[0] ||
+"Student";
+
+loadCourses();
+
+}
+
+}
+);
+
+</script>
+
+</body>
+</html>
