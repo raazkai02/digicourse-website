@@ -16,11 +16,11 @@ async function loginAdmin(){
     return;
   }
 
-  msg.textContent = "⏳ Login हो रहा है...";
+  msg.textContent = "⏳ Admin Login हो रहा है...";
 
   try{
 
-    /* STEP 1: SUPABASE AUTH LOGIN */
+    /* AUTH LOGIN */
 
     const data = await api(
       "/auth/v1/token?grant_type=password",
@@ -34,15 +34,33 @@ async function loginAdmin(){
       }
     );
 
-
     if(!data.access_token){
       throw new Error("Login token नहीं मिला");
     }
 
-
-    /* TOKEN SAVE */
-
     T = data.access_token;
+
+
+    /* ADMIN CHECK — केवल ID से */
+
+    const admins = await api(
+      "/rest/v1/admins?id=eq." +
+      encodeURIComponent(data.user.id) +
+      "&select=id,name"
+    );
+
+
+    if(!admins || admins.length === 0){
+
+      T = "";
+
+      throw new Error(
+        "❌ यह Account Admin के रूप में registered नहीं है"
+      );
+    }
+
+
+    /* SAVE SESSION */
 
     localStorage.setItem(
       "admin_token",
@@ -55,32 +73,9 @@ async function loginAdmin(){
     );
 
 
-    /* STEP 2: ADMIN TABLE में EMAIL से CHECK */
+    /* SUCCESS */
 
-    const admins = await api(
-      "/rest/v1/admins?email=eq." +
-      encodeURIComponent(email) +
-      "&select=*"
-    );
-
-
-    if(!admins || admins.length === 0){
-
-      T = "";
-
-      localStorage.removeItem("admin_token");
-      localStorage.removeItem("admin_user_id");
-
-      throw new Error(
-        "यह Gmail admins table में registered नहीं है"
-      );
-    }
-
-
-    /* STEP 3: ADMIN LOGIN SUCCESS */
-
-    msg.textContent =
-      "✅ Admin Login Successfully";
+    msg.textContent = "✅ Admin Login Successfully";
 
     showPanel();
 
@@ -89,7 +84,7 @@ async function loginAdmin(){
   }
   catch(error){
 
-    console.error(error);
+    console.error("ADMIN LOGIN:",error);
 
     T = "";
 
@@ -99,5 +94,4 @@ async function loginAdmin(){
     msg.textContent =
       "❌ " + error.message;
   }
-
 }
