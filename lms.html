@@ -1,13 +1,8 @@
 async function loginStudent(){
 
-  const name =
-    nameInput.value.trim();
-
-  const email =
-    emailInput.value.trim().toLowerCase();
-
-  const password =
-    passwordInput.value;
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
 
   msg.textContent = "";
   msg.className = "msg";
@@ -25,13 +20,13 @@ async function loginStudent(){
   }
 
   loginBtn.disabled = true;
-  loginBtn.textContent = "Login हो रहा है...";
+  loginBtn.textContent = "⏳ Login हो रहा है...";
 
   try{
 
     /* =========================
-       ONLY LOGIN
-    ========================= */
+       ONLY SUPABASE LOGIN
+       ========================= */
 
     const loginData = await supabaseRequest(
       "/auth/v1/token?grant_type=password",
@@ -52,8 +47,8 @@ async function loginStudent(){
 
 
     /* =========================
-       SAVE SESSION
-    ========================= */
+       SAVE LOGIN SESSION
+       ========================= */
 
     localStorage.setItem(
       "dc_access_token",
@@ -68,21 +63,18 @@ async function loginStudent(){
 
     /* =========================
        STUDENT NAME
-    ========================= */
+       ========================= */
 
-    let studentName = name;
-
-    if(!studentName){
-      studentName =
-        loginData.user?.user_metadata?.name ||
-        loginData.user?.email?.split("@")[0] ||
-        "Student";
-    }
+    const studentName =
+      name ||
+      loginData.user?.user_metadata?.name ||
+      loginData.user?.email?.split("@")[0] ||
+      "Student";
 
 
     /* =========================
        OPEN DASHBOARD
-    ========================= */
+       ========================= */
 
     loginBox.classList.add("hidden");
 
@@ -92,7 +84,12 @@ async function loginStudent(){
 
     msg.textContent = "";
 
-    loadCourses();
+
+    /* =========================
+       LOAD ONLY PURCHASED COURSES
+       ========================= */
+
+    await loadCourses();
 
 
   }
@@ -101,14 +98,19 @@ async function loginStudent(){
     console.error("LOGIN ERROR:",error);
 
     msg.textContent =
-      "❌ Login failed: " + error.message;
+      "❌ Login failed: " +
+      (error.message || "Unknown error");
 
     msg.classList.add("error");
 
   }
+  finally{
 
+    loginBtn.disabled = false;
 
-  loginBtn.disabled = false;
-  loginBtn.textContent = "Login / Register";
+    loginBtn.textContent =
+      "🔐 Login";
+
+  }
 
 }
