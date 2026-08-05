@@ -8,48 +8,77 @@
 <style>
 *{box-sizing:border-box}
 body{
- margin:0;font-family:Arial,sans-serif;
- background:#f5f7ff;color:#182033
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f7ff;
+color:#182033
 }
 .hero{
- padding:30px 6%;color:white;
- background:linear-gradient(135deg,#5b2cff,#8d4cff)
+padding:30px 6%;
+color:white;
+background:linear-gradient(135deg,#5b2cff,#8d4cff)
 }
 .wrap{padding:25px 6%}
 .box,.card{
- background:white;padding:20px;border-radius:16px;
- box-shadow:0 6px 22px #0001;margin:15px 0
+background:white;
+padding:20px;
+border-radius:16px;
+box-shadow:0 6px 22px #0001;
+margin:15px 0
 }
 .box{max-width:450px;margin:25px auto}
 input{
- width:100%;padding:13px;margin:7px 0;
- border:1px solid #ccc;border-radius:8px;font-size:16px
+width:100%;
+padding:13px;
+margin:7px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px
 }
 .btn{
- width:100%;padding:13px;margin-top:8px;
- background:#6633ee;color:white;border:0;
- border-radius:9px;font-size:16px;cursor:pointer
+width:100%;
+padding:13px;
+margin-top:8px;
+background:#6633ee;
+color:white;
+border:0;
+border-radius:9px;
+font-size:16px;
+cursor:pointer
 }
-.logout{background:#e53935;width:auto;padding:10px 18px}
+.logout{
+background:#e53935;
+width:auto;
+padding:10px 18px
+}
 .hidden{display:none!important}
 .msg{margin-top:12px;font-weight:bold}
 .error{color:#d00}
 .success{color:green}
 .topbar{
- display:flex;justify-content:space-between;
- align-items:center;gap:15px;flex-wrap:wrap
-}
-.cards{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
- gap:18px
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
 }
 .lesson{
- margin-top:12px;padding:15px;
- background:#f1efff;border-radius:10px
+margin-top:12px;
+padding:15px;
+background:#f1efff;
+border-radius:10px
 }
-.price{font-size:20px;font-weight:bold;color:#6633ee}
-a{color:#6633ee;font-weight:bold;text-decoration:none;margin-right:12px}
+.price{
+font-size:20px;
+font-weight:bold;
+color:#6633ee
+}
+a{
+color:#6633ee;
+font-weight:bold;
+text-decoration:none;
+margin-right:12px
+}
 </style>
 </head>
 
@@ -62,7 +91,6 @@ a{color:#6633ee;font-weight:bold;text-decoration:none;margin-right:12px}
 
 <main class="wrap">
 
-<!-- LOGIN -->
 <div id="login" class="box">
 
 <h2>👨‍🎓 Student Login</h2>
@@ -81,8 +109,6 @@ a{color:#6633ee;font-weight:bold;text-decoration:none;margin-right:12px}
 
 </div>
 
-
-<!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
 
 <div class="topbar">
@@ -108,12 +134,7 @@ Logout
 
 </main>
 
-
 <script>
-
-/* =========================
-SUPABASE
-========================= */
 
 const SUPABASE_URL =
 "https://qobwcoopjubdloduxgrz.supabase.co";
@@ -121,10 +142,6 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_4CUQ-Y8BWK7N_0rXZYJFDg_kLkcnbQJ";
 
-
-/* =========================
-ELEMENTS
-========================= */
 
 const loginBox =
 document.getElementById("login");
@@ -155,32 +172,43 @@ document.getElementById("courses");
 
 
 /* =========================
-SUPABASE REQUEST
+SUPABASE REQUEST - FIXED
 ========================= */
 
-async function supabaseRequest(endpoint,options={}){
+async function supabaseRequest(endpoint, options = {}) {
 
-const response = await fetch(
+const token =
+localStorage.getItem("dc_access_token") ||
+SUPABASE_KEY;
+
+const response =
+await fetch(
 SUPABASE_URL + endpoint,
 {
 ...options,
+
 headers:{
 "apikey":SUPABASE_KEY,
+
 "Authorization":
-"Bearer " + SUPABASE_KEY,
+"Bearer " + token,
+
 "Content-Type":"application/json",
+
 ...(options.headers || {})
 }
 }
 );
 
-const text = await response.text();
+const text =
+await response.text();
 
 let data=null;
 
 try{
 data=text ? JSON.parse(text) : null;
-}catch{
+}
+catch{
 data=text;
 }
 
@@ -239,7 +267,9 @@ return;
 }
 
 loginBtn.disabled=true;
-loginBtn.textContent="⏳ Login हो रहा है...";
+
+loginBtn.textContent=
+"⏳ Login हो रहा है...";
 
 try{
 
@@ -253,10 +283,8 @@ body:JSON.stringify({
 email:email,
 password:password
 })
-
 }
 );
-
 
 if(!loginData.access_token){
 
@@ -267,7 +295,7 @@ throw new Error(
 }
 
 
-/* SAVE SESSION */
+/* SAVE REAL STUDENT TOKEN */
 
 localStorage.setItem(
 "dc_access_token",
@@ -282,8 +310,6 @@ loginData.user || {}
 );
 
 
-/* NAME */
-
 const studentName =
 name ||
 loginData.user?.user_metadata?.name ||
@@ -291,18 +317,14 @@ loginData.user?.email?.split("@")[0] ||
 "Student";
 
 
-/* DASHBOARD */
-
 loginBox.classList.add("hidden");
 
 dashboard.classList.remove("hidden");
 
-welcome.textContent=studentName;
+welcome.textContent=
+studentName;
 
 msg.textContent="";
-
-
-/* PURCHASED COURSES */
 
 await loadCourses();
 
@@ -334,7 +356,7 @@ loginBtn.textContent=
 
 
 /* =========================
-LOAD PURCHASED COURSES
+LOAD COURSES
 ========================= */
 
 async function loadCourses(){
@@ -365,8 +387,6 @@ throw new Error(
 }
 
 
-/* ENROLLMENTS */
-
 const enrollments =
 await supabaseRequest(
 "/rest/v1/student_courses" +
@@ -390,13 +410,6 @@ courses.innerHTML=`
 <p>
 आपने अभी कोई course purchase नहीं किया है।
 </p>
-
-<a
-href="index.html"
-class="btn"
-style="display:inline-block;width:auto;color:white">
-🛒 Course खरीदें
-</a>
 
 </div>
 
@@ -422,8 +435,6 @@ return;
 
 }
 
-
-/* COURSES */
 
 const courseData =
 await supabaseRequest(
