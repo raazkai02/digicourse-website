@@ -65,8 +65,7 @@ async function loginStudent(){
 
     await loadCourses();
 
-  }
-  catch(error){
+  }catch(error){
 
     console.error("LOGIN ERROR:", error);
 
@@ -76,8 +75,7 @@ async function loginStudent(){
 
     msg.classList.add("error");
 
-  }
-  finally{
+  }finally{
 
     loginBtn.disabled = false;
 
